@@ -1,7 +1,6 @@
 package by.training.epam.controller;
 
-import by.training.epam.controller.exception.ControllerException;
-import by.training.epam.service.exception.ServiceException;
+import by.training.epam.controller.util.ParameterName;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,26 +18,16 @@ public class Controller extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
             execute(req, resp);
-        } catch (ControllerException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
             execute(req, resp);
-        } catch (ControllerException e) {
-            e.printStackTrace();
-        }
-
     }
 
-    public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException,
-            ControllerException {
-        Command command = provider.getCommand(req.getParameter("command"));
+    public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Command command = provider.getCommand(req.getParameter(ParameterName.COMMAND));
         command.execute(req,resp);
     }
 }

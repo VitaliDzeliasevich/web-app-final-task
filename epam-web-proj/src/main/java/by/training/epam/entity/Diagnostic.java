@@ -6,19 +6,27 @@ import java.util.Objects;
 public class Diagnostic implements Serializable {
 
     private int id;
-    private int diseaseHistoryId;
+    private int patientId;
     private int diagnosticTypeId;
     private int diagnosticDrId;
     private String appointmentDate;
     private String executionDate;
     private String result;
 
+    public Diagnostic() {}
+
+    public Diagnostic(int patientId, int diagnosticTypeId, String appointmentDate) {
+        this.patientId = patientId;
+        this.diagnosticTypeId = diagnosticTypeId;
+        this.appointmentDate = appointmentDate;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setDiseaseHistoryId(int diseaseHistoryId) {
-        this.diseaseHistoryId = diseaseHistoryId;
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
     }
 
     public void setDiagnosticTypeId(int diagnosticTypeId) {
@@ -45,8 +53,8 @@ public class Diagnostic implements Serializable {
         return id;
     }
 
-    public int getDiseaseHistoryId() {
-        return diseaseHistoryId;
+    public int getPatientId() {
+        return patientId;
     }
 
     public int getDiagnosticTypeId() {
@@ -74,19 +82,19 @@ public class Diagnostic implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Diagnostic that = (Diagnostic) o;
-        return id == that.id && diseaseHistoryId == that.diseaseHistoryId && diagnosticTypeId == that.diagnosticTypeId && diagnosticDrId == that.diagnosticDrId && Objects.equals(appointmentDate, that.appointmentDate) && Objects.equals(executionDate, that.executionDate) && Objects.equals(result, that.result);
+        return id == that.id && patientId == that.patientId && diagnosticTypeId == that.diagnosticTypeId && diagnosticDrId == that.diagnosticDrId && Objects.equals(appointmentDate, that.appointmentDate) && Objects.equals(executionDate, that.executionDate) && Objects.equals(result, that.result);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, diseaseHistoryId, diagnosticTypeId, diagnosticDrId, appointmentDate, executionDate, result);
+        return Objects.hash(id, patientId, diagnosticTypeId, diagnosticDrId, appointmentDate, executionDate, result);
     }
 
     @Override
     public String toString() {
         return "Diagnostic{" +
                 "id=" + id +
-                ", diseaseHistoryId=" + diseaseHistoryId +
+                ", patientId=" + patientId +
                 ", diagnosticTypeId=" + diagnosticTypeId +
                 ", diagnosticDrId=" + diagnosticDrId +
                 ", appointmentDate='" + appointmentDate + '\'' +

@@ -3,10 +3,14 @@ package by.training.epam.dao.impl.requestoperator.impl;
 
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.exeption.DAOException;
+import by.training.epam.dao.impl.AnalysisDAOImpl;
 import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
 import by.training.epam.dao.impl.rowmapper.impl.AnalysisRowMapper;
 import by.training.epam.entity.Analysis;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,10 +21,7 @@ import java.util.List;
 
 public class AnalysisRequestOperator implements RequestOperator<Analysis> {
 
-    private Connection connection;
-    private PreparedStatement preparedStatement;
-    private ResultSet resultSet;
-    private final static RowMapper<Analysis> fieldsMapper = new AnalysisRowMapper();
+    private final static Logger log = Logger.getLogger(AnalysisRequestOperator.class);
 
     private final static AnalysisRequestOperator instance = new AnalysisRequestOperator();
 
@@ -31,19 +32,25 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
     }
 
     @Override
-    public List<Analysis> findAll(String SQLRequest, ConnectionPool connectionPool) {
-        List<Analysis> list = new ArrayList<>();
+    public List<Analysis> findAll(String SQLRequest, ConnectionPool connectionPool) throws DAOException {
+        RowMapper<Analysis> rowMapper = AnalysisRowMapper.getInstance();
+        List<Analysis> list;
+        Connection connection;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             connection = connectionPool.takeConnection();
         } catch (ConnectionPoolException e) {
-            e.printStackTrace();
+            log.log(Level.ERROR, e);
+            throw new DAOException(e);
         }
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
             resultSet = preparedStatement.executeQuery();
-            list  = fieldsMapper.fillFields(resultSet);
+            list  = rowMapper.fillFields(resultSet);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.log(Level.ERROR, throwables);
+            throw new DAOException(throwables);
         } finally {
             try {
                 if (resultSet != null) {
@@ -54,19 +61,25 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
                 }
                 connection.close();
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                log.log(Level.ERROR, throwables);
             }
         }
         return list;
     }
 
     @Override
-    public List<Analysis> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes) {
-        List<Analysis> list = new ArrayList<>();
+    public List<Analysis> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes)
+            throws DAOException{
+        RowMapper<Analysis> rowMapper = AnalysisRowMapper.getInstance();
+        List<Analysis> list;
+        Connection connection;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             connection = connectionPool.takeConnection();
         } catch (ConnectionPoolException e) {
-            e.printStackTrace();
+            log.log(Level.ERROR, e);
+            throw new DAOException(e);
         }
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
@@ -74,9 +87,10 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
                 preparedStatement.setObject(i+1,attributes[i]);
             }
             resultSet = preparedStatement.executeQuery();
-            list  = fieldsMapper.fillFields(resultSet);
+            list  = rowMapper.fillFields(resultSet);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.log(Level.ERROR, throwables);
+            throw new DAOException(throwables);
         } finally {
             try {
                 if (resultSet != null) {
@@ -87,7 +101,7 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
                 }
                 connection.close();
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                log.log(Level.ERROR,throwables);
             }
         }
         return list;

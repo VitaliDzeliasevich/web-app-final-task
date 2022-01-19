@@ -4,6 +4,9 @@ import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolFactory;
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.*;
+import by.training.epam.dao.interfaces.*;
+import by.training.epam.entity.Department;
+import by.training.epam.entity.Room;
 
 public class DAOFactory  {
 
@@ -11,18 +14,21 @@ public class DAOFactory  {
 
     private static final DAOFactory daoFactory = new DAOFactory();
 
-    public static DAOFactory getInstance() throws DAOException {
+    public static DAOFactory getInstance() {
         return daoFactory; }
 
     private final ConnectionPoolFactory factory = ConnectionPoolFactory.getInstance();
     private final ConnectionPool connectionPool = factory.getConnectionPool();
 
+    private  final UserDAO userDAO = new UserDAOImpl(connectionPool);
+    private  final PatientDAO patientDAO = new PatientDAOImpl(connectionPool);
+
 
     public UserDAO getUserDAO() throws DAOException {
-        return  new UserDAOImpl(connectionPool);
+        return  userDAO;
     }
     public PatientDAO getPatientDAO() throws DAOException  {
-        return  new PatientDAOImpl(connectionPool);
+        return  patientDAO;
     }
     public OperationDAO getOperationDAO() throws DAOException {
         return  new OperationDAOImpl(connectionPool);
@@ -42,6 +48,14 @@ public class DAOFactory  {
 
     public AnalysisDAO getAnalysisDAO() throws DAOException {
         return  new AnalysisDAOImpl(connectionPool);
+    }
+
+    public AbstractDAO<Room> getRoomDAO() throws DAOException {
+        return  new RoomDAOImpl(connectionPool);
+    }
+
+    public AbstractDAO<Department> getDepartmentDAO() throws DAOException {
+        return  new DepartmentDAOImpl(connectionPool);
     }
 
     public void disposePool() {

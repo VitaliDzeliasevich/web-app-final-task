@@ -2,7 +2,7 @@ package by.training.epam.dao.impl;
 
 
 
-import by.training.epam.dao.DrVisitDAO;
+import by.training.epam.dao.interfaces.DrVisitDAO;
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.RequestOperator;
@@ -32,20 +32,19 @@ public class DrVisitDAOImpl implements DrVisitDAO {
 //            (TableTitle.DR_VISITS_TABLE,
 //                    ColumnLabel.OPERATION_SURGEON_ID, ColumnLabel.EXECUTION_DATE, ColumnLabel.OPERATION_DESCRIPTION);
 
-    private final static RequestOperator<DrVisit> requestOp = DrVisitRequestOperator.getInstance();
-    private final static UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
-
     public DrVisitDAOImpl(ConnectionPool connectionPool) throws DAOException {
         this.connectionPool = connectionPool;
     }
 
     @Override
     public List<DrVisit> getAll() throws DAOException {
+        RequestOperator<DrVisit> requestOp = DrVisitRequestOperator.getInstance();
         return requestOp.findAll(GET_ALL_REQUEST, connectionPool);
     }
 
     @Override
     public DrVisit getEntityById(int id) throws DAOException {
+        RequestOperator<DrVisit> requestOp = DrVisitRequestOperator.getInstance();
         return requestOp.findByParameters(GET_BY_ID_REQUEST, connectionPool, id).get(0);
     }
 
@@ -56,17 +55,20 @@ public class DrVisitDAOImpl implements DrVisitDAO {
 
     @Override
     public boolean delete(int id) throws DAOException {
+        UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
         return universalRequestOp.delete(DELETE_BY_ID, connectionPool, id);
     }
 
     @Override
-    public boolean create(DrVisit entity) throws DAOException {
+    public int create(DrVisit entity) throws DAOException {
+        UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
         return universalRequestOp.create(CREATE_REQUEST, connectionPool, entity.getId(), entity.getPatientId(),
                 entity.getPatientConditionId(), entity.getDate(), entity.getDescription());
     }
 
     @Override
-    public List<DrVisit> getByHistoryId(int id) {
+    public List<DrVisit> getByHistoryId(int id) throws DAOException {
+        RequestOperator<DrVisit> requestOp = DrVisitRequestOperator.getInstance();
         return requestOp.findByParameters(GET_BY_PATIENT_ID_REQUEST, connectionPool, id);
     }
 }

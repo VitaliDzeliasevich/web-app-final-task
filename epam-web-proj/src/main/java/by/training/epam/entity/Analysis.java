@@ -13,6 +13,14 @@ public class Analysis implements Serializable {
     private String executionDate;
     private String result;
 
+    public Analysis() {}
+
+    public Analysis(int patientId,int analysisTypeId, String appointmentDate) {
+        this.patientId = patientId;
+        this.analysisTypeId = analysisTypeId;
+        this.appointmentDate = appointmentDate;
+    }
+
     public int getId() {
         return id;
     }

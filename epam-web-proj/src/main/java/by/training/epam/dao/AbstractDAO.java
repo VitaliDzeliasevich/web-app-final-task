@@ -11,6 +11,6 @@ public interface AbstractDAO<E> {
     E getEntityById(int id) throws DAOException;
     boolean update(E entity) throws DAOException;
     boolean delete(int id) throws DAOException;
-    boolean create(E entity) throws DAOException;
+    int create(E entity) throws DAOException;
 
 }

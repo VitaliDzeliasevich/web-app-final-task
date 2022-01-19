@@ -2,10 +2,13 @@ package by.training.epam.dao.impl.requestoperator.impl;
 
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
 import by.training.epam.dao.impl.rowmapper.impl.DiseaseHistoryRowMapper;
 import by.training.epam.entity.DiseaseHistory;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,9 +19,8 @@ import java.util.List;
 
 public class DiseaseHistoryRequestOperator implements RequestOperator<DiseaseHistory> {
 
-    private Connection connection;
-    private PreparedStatement preparedStatement;
-    private ResultSet resultSet;
+    private final static Logger log = Logger.getLogger(DiseaseHistoryRequestOperator.class);
+
     private final static RowMapper<DiseaseHistory> fieldsMapper = new DiseaseHistoryRowMapper();
 
     private final static DiseaseHistoryRequestOperator instance = new DiseaseHistoryRequestOperator();
@@ -30,12 +32,16 @@ public class DiseaseHistoryRequestOperator implements RequestOperator<DiseaseHis
     }
 
     @Override
-    public List<DiseaseHistory> findAll(String SQLRequest, ConnectionPool connectionPool) {
+    public List<DiseaseHistory> findAll(String SQLRequest, ConnectionPool connectionPool) throws DAOException {
         List<DiseaseHistory> list = new ArrayList<>();
+        Connection connection;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             connection = connectionPool.takeConnection();
         } catch (ConnectionPoolException e) {
-            e.printStackTrace();
+            log.log(Level.ERROR, e);
+            throw new DAOException(e);
         }
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
@@ -60,12 +66,17 @@ public class DiseaseHistoryRequestOperator implements RequestOperator<DiseaseHis
     }
 
     @Override
-    public List<DiseaseHistory> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes) {
+    public List<DiseaseHistory> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes)
+            throws DAOException{
         List<DiseaseHistory> list = new ArrayList<>();
+        Connection connection;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             connection = connectionPool.takeConnection();
         } catch (ConnectionPoolException e) {
-            e.printStackTrace();
+            log.log(Level.ERROR, e);
+            throw new DAOException(e);
         }
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);

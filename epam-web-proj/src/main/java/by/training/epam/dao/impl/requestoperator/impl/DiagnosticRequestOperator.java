@@ -2,10 +2,13 @@ package by.training.epam.dao.impl.requestoperator.impl;
 
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
 import by.training.epam.dao.impl.rowmapper.impl.DiagnosticRowMapper;
 import by.training.epam.entity.Diagnostic;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,9 +19,8 @@ import java.util.List;
 
 public class DiagnosticRequestOperator implements RequestOperator<Diagnostic> {
 
-    private Connection connection;
-    private PreparedStatement preparedStatement;
-    private ResultSet resultSet;
+    private final static Logger log = Logger.getLogger(DiagnosticRequestOperator.class);
+
     private final static RowMapper<Diagnostic> fieldsMapper = new DiagnosticRowMapper();
 
     private final static DiagnosticRequestOperator instance = new DiagnosticRequestOperator();
@@ -30,12 +32,16 @@ public class DiagnosticRequestOperator implements RequestOperator<Diagnostic> {
     }
 
     @Override
-    public List<Diagnostic> findAll(String SQLRequest, ConnectionPool connectionPool) {
+    public List<Diagnostic> findAll(String SQLRequest, ConnectionPool connectionPool) throws DAOException {
         List<Diagnostic> list = new ArrayList<>();
+        Connection connection;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             connection = connectionPool.takeConnection();
         } catch (ConnectionPoolException e) {
-            e.printStackTrace();
+            log.log(Level.ERROR, e);
+            throw new DAOException(e);
         }
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
@@ -60,12 +66,17 @@ public class DiagnosticRequestOperator implements RequestOperator<Diagnostic> {
     }
 
     @Override
-    public List<Diagnostic> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes) {
+    public List<Diagnostic> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes)
+            throws DAOException{
         List<Diagnostic> list = new ArrayList<>();
+        Connection connection;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         try {
             connection = connectionPool.takeConnection();
         } catch (ConnectionPoolException e) {
-            e.printStackTrace();
+            log.log(Level.ERROR, e);
+            throw new DAOException(e);
         }
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);

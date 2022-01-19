@@ -13,6 +13,14 @@ public class Operation implements Serializable {
     private String executionDate;
     private String description;
 
+    public Operation() {}
+
+    public Operation(int patientId, int operationTypeId, String plannedDate) {
+        this.patientId = patientId;
+        this.operationTypeId = operationTypeId;
+        this.plannedDate = plannedDate;
+    }
+
     public int getId() {
         return id;
     }

@@ -12,9 +12,16 @@ public class DiseaseHistory implements Serializable {
     private String lifeAnamnesis;
     private String diseaseAnamnesis;
     private String dischargingDate;
-    private String dischargingDiagnosis;
+    private String epicrysis;
 
     public DiseaseHistory() {}
+
+    public DiseaseHistory(int patientID, String admissionDate, String admissionDiagnosis) {
+        this.patientID = patientID;
+        this.admissionDate = admissionDate;
+        this.admissionDiagnosis = admissionDiagnosis;
+    }
+
 
     public void setId(int id) {
         this.id = id;
@@ -44,8 +51,8 @@ public class DiseaseHistory implements Serializable {
         this.dischargingDate = dischargingDate;
     }
 
-    public void setDischargingDiagnosis(String dischargingDiagnosis) {
-        this.dischargingDiagnosis = dischargingDiagnosis;
+    public void setEpicrysis(String epicrysis) {
+        this.epicrysis = epicrysis;
     }
 
     public int getId() {
@@ -76,8 +83,8 @@ public class DiseaseHistory implements Serializable {
         return dischargingDate;
     }
 
-    public String getDischargingDiagnosis() {
-        return dischargingDiagnosis;
+    public String getEpicrysis() {
+        return epicrysis;
     }
 
     @Override
@@ -85,12 +92,12 @@ public class DiseaseHistory implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DiseaseHistory that = (DiseaseHistory) o;
-        return id == that.id && patientID == that.patientID && Objects.equals(admissionDate, that.admissionDate) && Objects.equals(admissionDiagnosis, that.admissionDiagnosis) && Objects.equals(lifeAnamnesis, that.lifeAnamnesis) && Objects.equals(diseaseAnamnesis, that.diseaseAnamnesis) && Objects.equals(dischargingDate, that.dischargingDate) && Objects.equals(dischargingDiagnosis, that.dischargingDiagnosis);
+        return id == that.id && patientID == that.patientID && Objects.equals(admissionDate, that.admissionDate) && Objects.equals(admissionDiagnosis, that.admissionDiagnosis) && Objects.equals(lifeAnamnesis, that.lifeAnamnesis) && Objects.equals(diseaseAnamnesis, that.diseaseAnamnesis) && Objects.equals(dischargingDate, that.dischargingDate) && Objects.equals(epicrysis, that.epicrysis);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, patientID, admissionDate, admissionDiagnosis, lifeAnamnesis, diseaseAnamnesis, dischargingDate, dischargingDiagnosis);
+        return Objects.hash(id, patientID, admissionDate, admissionDiagnosis, lifeAnamnesis, diseaseAnamnesis, dischargingDate, epicrysis);
     }
 
     @Override
@@ -103,7 +110,7 @@ public class DiseaseHistory implements Serializable {
                 ", lifeAnamnesis='" + lifeAnamnesis + '\'' +
                 ", diseaseAnamnesis='" + diseaseAnamnesis + '\'' +
                 ", dischargingDate='" + dischargingDate + '\'' +
-                ", dischargingDiagnosis='" + dischargingDiagnosis + '\'' +
+                ", epicrysis='" + epicrysis + '\'' +
                 '}';
     }
 }

@@ -1,12 +1,12 @@
 package by.training.epam.dao.impl;
 
-import by.training.epam.dao.UserDAO;
+import by.training.epam.dao.impl.requestoperator.UserRequestOperator;
+import by.training.epam.dao.interfaces.UserDAO;
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.exeption.DAOException;
-import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.requestoperator.UniversalRequestOperator;
 import by.training.epam.dao.impl.requestoperator.impl.UniversalRequestOpImpl;
-import by.training.epam.dao.impl.requestoperator.impl.UserRequestOperator;
+import by.training.epam.dao.impl.requestoperator.impl.UserRequestOperatorImpl;
 import by.training.epam.dao.impl.tableinfo.ColumnLabel;
 import by.training.epam.dao.impl.tableinfo.TableTitle;
 import by.training.epam.entity.User;
@@ -26,11 +26,12 @@ public class UserDAOImpl implements UserDAO {
     private static final String UPDATE_REQUEST = "UPDATE %s SET %s = ? WHERE id = ?".formatted(TableTitle.USER_TABLE,
             ColumnLabel.USER_DEPARTMENT);
     private static final String CHECK_LOGIN_REQUEST = "SELECT * FROM %s WHERE %s = ? AND %s = ?"
-            .formatted(TableTitle.USER_TABLE,
-            ColumnLabel.USER_LOGIN, ColumnLabel.USER_PASSWORD);
-
-    private final static RequestOperator<User> requestOp = UserRequestOperator.getInstance();
-    private final static UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
+            .formatted(TableTitle.USER_TABLE, ColumnLabel.USER_LOGIN, ColumnLabel.USER_PASSWORD);
+    private static final String FIND_BY_LOGIN_REQUEST = "SELECT * FROM %s WHERE %s = ?".formatted(TableTitle.USER_TABLE,
+                    ColumnLabel.USER_LOGIN);
+    private static final String GET_ROLE_REQUEST = ("SELECT %s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s = ?").
+            formatted(ColumnLabel.ROLE, TableTitle.USER_TABLE, TableTitle.ROLE_TABLE,TableTitle.USER_TABLE,
+                    ColumnLabel.USER_ROLE, TableTitle.ROLE_TABLE, ColumnLabel.ID, TableTitle.USER_TABLE, ColumnLabel.USER_LOGIN);
 
     public UserDAOImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
@@ -40,32 +41,38 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<User> getAll() throws DAOException {
+        UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
         return requestOp.findAll(GET_ALL_REQUEST,connectionPool);
     }
 
     @Override
     public User getEntityById(int id) throws DAOException{
+        UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
         return  requestOp.findByParameters(GET_BY_ID_REQUEST, connectionPool, id).get(0);
     }
 
     @Override
     public boolean update(User entity) throws DAOException{
+        UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
         return universalRequestOp.update(UPDATE_REQUEST, connectionPool, entity.getDepartmentsId(), entity.getId());
     }
 
     @Override
     public boolean delete(int id) throws DAOException {
+        UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
         return universalRequestOp.delete(DELETE_BY_ID_REQUEST, connectionPool, id);
     }
 
     @Override
-    public boolean create(User entity) throws DAOException{
+    public int create(User entity) throws DAOException{
+        UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
         return universalRequestOp.create(CREATE_REQUEST,connectionPool, entity.getRoleId(),
                 entity.getLogin(),
                 entity.getPassword(), entity.getName(), entity.getSurname());
     }
 
-    public boolean authorized(String login, String password) {
+    public boolean authorized(String login, String password) throws DAOException {
+        UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
         boolean authorized = false;
         List<User> users;
         users = requestOp.findByParameters(CHECK_LOGIN_REQUEST, connectionPool, login, password);
@@ -74,4 +81,15 @@ public class UserDAOImpl implements UserDAO {
         }
         return authorized;
     }
+
+    public boolean isLoginExist(String login) throws DAOException {
+        UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
+        return requestOp.findByParameters(FIND_BY_LOGIN_REQUEST, connectionPool, login).size() == 1;
+    }
+
+    public String getRole(String login) throws DAOException {
+        UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
+        return requestOp.getRole(GET_ROLE_REQUEST, connectionPool, login);
+    }
+
 }
