@@ -2,8 +2,8 @@ package by.training.epam.dao.impl.requestoperator.impl;
 
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.connectionpool.ConnectionPoolFactory;
 import by.training.epam.dao.exeption.DAOException;
-import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.requestoperator.UserRequestOperator;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
 import by.training.epam.dao.impl.rowmapper.impl.UserRowMapper;
@@ -32,13 +32,13 @@ public class UserRequestOperatorImpl implements UserRequestOperator {
     }
 
 
-    public List<User> findAll(String SQLRequest, ConnectionPool connectionPool) throws DAOException {
+    public List<User> findAll(String SQLRequest) throws DAOException {
         List<User> list;
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR,e);
             throw new DAOException(e);
@@ -46,7 +46,7 @@ public class UserRequestOperatorImpl implements UserRequestOperator {
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
             resultSet = preparedStatement.executeQuery();
-            list  = userMapper.fillFields(resultSet);
+            list  = userMapper.map(resultSet);
         } catch (SQLException throwables) {
             log.log(Level.ERROR,throwables);
             throw new DAOException(throwables);
@@ -70,14 +70,14 @@ public class UserRequestOperatorImpl implements UserRequestOperator {
         return list;
     }
 
-    public List<User> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes)
+    public List<User> findByParameters(String SQLRequest, Object... attributes)
     throws DAOException{
         List<User> list;
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR,e);
             throw new DAOException(e);
@@ -88,7 +88,7 @@ public class UserRequestOperatorImpl implements UserRequestOperator {
                     preparedStatement.setObject(i+1,attributes[i]);
                 }
             resultSet = preparedStatement.executeQuery();
-            list  = userMapper.fillFields(resultSet);
+            list  = userMapper.map(resultSet);
         } catch (SQLException throwables) {
             log.log(Level.ERROR,throwables);
             throw new DAOException(throwables);
@@ -112,14 +112,14 @@ public class UserRequestOperatorImpl implements UserRequestOperator {
         return list;
     }
 
-    public String getRole(String SQLRequest, ConnectionPool connectionPool, String login)
+    public String getRole(String SQLRequest, String login)
             throws DAOException{
         String role = null;
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR,e);
             throw new DAOException(e);

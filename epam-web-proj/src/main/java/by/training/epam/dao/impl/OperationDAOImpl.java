@@ -9,67 +9,71 @@ import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.requestoperator.UniversalRequestOperator;
 import by.training.epam.dao.impl.requestoperator.impl.OperationRequestOperator;
 import by.training.epam.dao.impl.requestoperator.impl.UniversalRequestOpImpl;
-import by.training.epam.dao.impl.tableinfo.ColumnLabel;
-import by.training.epam.dao.impl.tableinfo.TableTitle;
+import by.training.epam.dao.impl.tableinfo.SQLColumnLabel;
+import by.training.epam.dao.impl.tableinfo.SQLTableTitle;
 import by.training.epam.entity.Operation;
 
 import java.util.List;
 
 public class OperationDAOImpl implements OperationDAO {
 
-    private  final ConnectionPool connectionPool;
-    private static final String GET_ALL_REQUEST = "SELECT * FROM %s".formatted(TableTitle.OPERATIONS_TABLE);
-    private static final String GET_BY_PATIENT_ID_REQUEST =
-            "SELECT * FROM %s WHERE %s = ?".formatted(TableTitle.OPERATIONS_TABLE, ColumnLabel.PATIENT_ID);
-    private static final String GET_BY_ID_REQUEST =
-            "SELECT * FROM %s WHERE id = ?".formatted(TableTitle.OPERATIONS_TABLE);
-    private static final String CREATE_REQUEST =
-            "INSERT INTO %s (%s,%s,%s) VALUES (?, ?, ?)".formatted(TableTitle.OPERATIONS_TABLE,ColumnLabel.PATIENT_ID,
-                    ColumnLabel.OPERATION_TYPE_ID, ColumnLabel.OPERATION_PLANNED_DATE);
-    private static final String DELETE_BY_ID = "DELETE FROM %s WHERE id = ?".formatted(TableTitle.OPERATIONS_TABLE);
-    private static final String UPDATE_REQUEST = "UPDATE %s SET %s = ?, %s = ?, %s = ?  WHERE id = ?".formatted
-            (TableTitle.OPERATIONS_TABLE,
-            ColumnLabel.OPERATION_SURGEON_ID, ColumnLabel.EXECUTION_DATE, ColumnLabel.OPERATION_DESCRIPTION);
 
-    public OperationDAOImpl(ConnectionPool connectionPool) throws DAOException {
-        this.connectionPool = connectionPool;
+    private static final String GET_ALL_REQUEST = "SELECT * FROM %s".formatted(SQLTableTitle.OPERATIONS_TABLE);
+    private static final String GET_BY_PATIENT_ID_REQUEST =
+            "SELECT * FROM %s WHERE %s = ?".formatted(SQLTableTitle.OPERATIONS_TABLE, SQLColumnLabel.PATIENT_ID);
+    private static final String GET_BY_ID_REQUEST =
+            "SELECT * FROM %s WHERE id = ?".formatted(SQLTableTitle.OPERATIONS_TABLE);
+    private static final String CREATE_REQUEST =
+            "INSERT INTO %s (%s,%s,%s) VALUES (?, ?, ?)".formatted(SQLTableTitle.OPERATIONS_TABLE, SQLColumnLabel.PATIENT_ID,
+                    SQLColumnLabel.OPERATION_TYPE_ID, SQLColumnLabel.OPERATION_PLANNED_DATE);
+    private static final String DELETE_BY_ID = "DELETE FROM %s WHERE id = ?".formatted(SQLTableTitle.OPERATIONS_TABLE);
+    private static final String UPDATE_REQUEST = "UPDATE %s SET %s = ?, %s = ?, %s = ?  WHERE id = ?".formatted
+            (SQLTableTitle.OPERATIONS_TABLE,
+            SQLColumnLabel.OPERATION_SURGEON_ID, SQLColumnLabel.EXECUTION_DATE, SQLColumnLabel.OPERATION_DESCRIPTION);
+
+    private OperationDAOImpl() {}
+
+    private static final OperationDAOImpl instance = new OperationDAOImpl();
+
+    public static OperationDAOImpl getInstance() {
+        return instance;
     }
 
     @Override
     public List<Operation> getAll() throws DAOException {
         RequestOperator<Operation> requestOp = OperationRequestOperator.getInstance();
-        return requestOp.findAll(GET_ALL_REQUEST, connectionPool);
+        return requestOp.findAll(GET_ALL_REQUEST);
     }
 
     @Override
     public Operation getEntityById(int id) throws DAOException {
         RequestOperator<Operation> requestOp = OperationRequestOperator.getInstance();
-        return requestOp.findByParameters(GET_BY_ID_REQUEST, connectionPool, id).get(0);
+        return requestOp.findByParameters(GET_BY_ID_REQUEST, id).get(0);
     }
 
     @Override
     public boolean update(Operation entity) throws DAOException {
         UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
-        return universalRequestOp.update(UPDATE_REQUEST, connectionPool, entity.getSurgeonId(), entity.getExecutionDate(),
+        return universalRequestOp.update(UPDATE_REQUEST, entity.getSurgeonId(), entity.getExecutionDate(),
                 entity.getDescription());
     }
 
     @Override
     public boolean delete(int id) throws DAOException {
         UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
-        return universalRequestOp.delete(DELETE_BY_ID, connectionPool, id);
+        return universalRequestOp.delete(DELETE_BY_ID, id);
     }
 
     @Override
     public int create(Operation entity) throws DAOException {
         UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
-        return universalRequestOp.create(CREATE_REQUEST, connectionPool, entity.getPatientId(),
+        return universalRequestOp.create(CREATE_REQUEST, entity.getPatientId(),
                 entity.getOperationTypeId(), entity.getPlannedDate());
     }
 
     @Override
     public List<Operation> getByHistoryId(int id) throws DAOException {
         RequestOperator<Operation> requestOp = OperationRequestOperator.getInstance();
-        return requestOp.findByParameters(GET_BY_PATIENT_ID_REQUEST, connectionPool, id);
+        return requestOp.findByParameters(GET_BY_PATIENT_ID_REQUEST, id);
     }
 }

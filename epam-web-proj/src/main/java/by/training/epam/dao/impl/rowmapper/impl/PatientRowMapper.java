@@ -2,7 +2,7 @@ package by.training.epam.dao.impl.rowmapper.impl;
 
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
-import by.training.epam.dao.impl.tableinfo.ColumnLabel;
+import by.training.epam.dao.impl.tableinfo.SQLColumnLabel;
 import by.training.epam.entity.Patient;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -18,19 +18,21 @@ public class PatientRowMapper implements RowMapper<Patient> {
     private static final Logger log = Logger.getLogger(PatientRowMapper.class);
 
     @Override
-    public List<Patient> fillFields(ResultSet resultSet) throws DAOException{
+    public List<Patient> map(ResultSet resultSet) throws DAOException{
         List<Patient> patientList = new ArrayList<>();
         try {
             while (resultSet.next()) {
                 Patient patient = new Patient();
-                patient.setRoomNumber(resultSet.getInt(ColumnLabel.ROOM_NUMBER));
-                patient.setId(resultSet.getInt(ColumnLabel.ID));
-                patient.setSurname(resultSet.getString(ColumnLabel.PATIENT_SURNAME));
-                patient.setSex(resultSet.getString(ColumnLabel.PATIENT_SEX));
-                patient.setName(resultSet.getString(ColumnLabel.PATIENT_NAME));
-                patient.setBirthDate(resultSet.getString(ColumnLabel.PATIENT_BIRTHDATE));
-                patient.setDepartment(resultSet.getString(ColumnLabel.DEPARTMENT_TYPE) + " " +
-                        resultSet.getString(ColumnLabel.DEPARTMENT_NUMBER));
+                patient.setRoomNumber(resultSet.getInt(SQLColumnLabel.ROOM_NUMBER));
+                patient.setId(resultSet.getInt(SQLColumnLabel.ID));
+                patient.setSurname(resultSet.getString(SQLColumnLabel.PATIENT_SURNAME));
+                patient.setSex(resultSet.getString(SQLColumnLabel.PATIENT_SEX));
+                patient.setName(resultSet.getString(SQLColumnLabel.PATIENT_NAME));
+                patient.setBirthDate(resultSet.getString(SQLColumnLabel.PATIENT_BIRTHDATE));
+                patient.setDepartment(resultSet.getString(SQLColumnLabel.TYPE) + " " +
+                        resultSet.getString(SQLColumnLabel.DEPARTMENT_NUMBER));
+//                patient.setAdmissionDiagnosis(resultSet.getString(SQLColumnLabel.DISEASE_HISTORY_ADMISSION_DIAGNOSIS));
+//                patient.setAdmissionDate(resultSet.getString(SQLColumnLabel.DISEASE_HISTORY_ADMISSION_DATE));
                 patientList.add(patient);
             }
         } catch (SQLException e) {

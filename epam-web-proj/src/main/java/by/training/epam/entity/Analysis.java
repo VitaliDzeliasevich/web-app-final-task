@@ -12,6 +12,7 @@ public class Analysis implements Serializable {
     private String appointmentDate;
     private String executionDate;
     private String result;
+    private String type;
 
     public Analysis() {}
 
@@ -19,6 +20,20 @@ public class Analysis implements Serializable {
         this.patientId = patientId;
         this.analysisTypeId = analysisTypeId;
         this.appointmentDate = appointmentDate;
+    }
+
+    public Analysis(int id,String result, String executionDate) {
+        this.id = id;
+        this.result = result;
+        this.executionDate = executionDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getId() {
@@ -82,12 +97,12 @@ public class Analysis implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Analysis analysis = (Analysis) o;
-        return id == analysis.id && patientId == analysis.patientId && analysisTypeId == analysis.analysisTypeId && labDrId == analysis.labDrId && Objects.equals(appointmentDate, analysis.appointmentDate) && Objects.equals(executionDate, analysis.executionDate) && Objects.equals(result, analysis.result);
+        return id == analysis.id && patientId == analysis.patientId && analysisTypeId == analysis.analysisTypeId && labDrId == analysis.labDrId && Objects.equals(appointmentDate, analysis.appointmentDate) && Objects.equals(executionDate, analysis.executionDate) && Objects.equals(result, analysis.result) && Objects.equals(type, analysis.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, patientId, analysisTypeId, labDrId, appointmentDate, executionDate, result);
+        return Objects.hash(id, patientId, analysisTypeId, labDrId, appointmentDate, executionDate, result, type);
     }
 
     @Override
@@ -100,6 +115,7 @@ public class Analysis implements Serializable {
                 ", appointmentDate='" + appointmentDate + '\'' +
                 ", executionDate='" + executionDate + '\'' +
                 ", result='" + result + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

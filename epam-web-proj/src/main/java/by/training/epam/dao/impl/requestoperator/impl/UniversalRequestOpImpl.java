@@ -2,6 +2,7 @@ package by.training.epam.dao.impl.requestoperator.impl;
 
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.connectionpool.ConnectionPoolFactory;
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.UniversalRequestOperator;
 import org.apache.log4j.Level;
@@ -26,12 +27,12 @@ public class UniversalRequestOpImpl implements UniversalRequestOperator {
 
 
     @Override
-    public int create(String SQLRequest, ConnectionPool connectionPool, Object... attributes) throws  DAOException {
+    public int create(String SQLRequest, Object... attributes) throws  DAOException {
         int generatedId =0;
         Connection connection;
         PreparedStatement preparedStatement = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR,e);
             throw new DAOException(e);
@@ -77,12 +78,12 @@ public class UniversalRequestOpImpl implements UniversalRequestOperator {
 
 
     @Override
-    public boolean delete(String SQLRequest, ConnectionPool connectionPool, int id) throws DAOException{
+    public boolean delete(String SQLRequest, int id) throws DAOException{
         boolean deleted = false;
         Connection connection;
         PreparedStatement preparedStatement = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR,e);
             throw new DAOException(e);
@@ -108,12 +109,12 @@ public class UniversalRequestOpImpl implements UniversalRequestOperator {
         return deleted;
     }
 
-    public boolean update(String SQLRequest, ConnectionPool connectionPool, Object... attributes) throws DAOException{
+    public boolean update(String SQLRequest, Object... attributes) throws DAOException{
         boolean updated = false;
         Connection connection;
         PreparedStatement preparedStatement = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR,e);
             throw new DAOException(e);

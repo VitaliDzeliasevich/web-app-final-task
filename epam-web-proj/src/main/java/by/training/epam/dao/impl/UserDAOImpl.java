@@ -7,8 +7,8 @@ import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.UniversalRequestOperator;
 import by.training.epam.dao.impl.requestoperator.impl.UniversalRequestOpImpl;
 import by.training.epam.dao.impl.requestoperator.impl.UserRequestOperatorImpl;
-import by.training.epam.dao.impl.tableinfo.ColumnLabel;
-import by.training.epam.dao.impl.tableinfo.TableTitle;
+import by.training.epam.dao.impl.tableinfo.SQLColumnLabel;
+import by.training.epam.dao.impl.tableinfo.SQLTableTitle;
 import by.training.epam.entity.User;
 
 
@@ -16,25 +16,28 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
 
-    private final ConnectionPool connectionPool;
-    private static final String GET_ALL_REQUEST = "SELECT * FROM %s".formatted(TableTitle.USER_TABLE);
-    private static final String GET_BY_ID_REQUEST = "SELECT * FROM %s WHERE id = ?".formatted(TableTitle.USER_TABLE);
-    private static final String CREATE_REQUEST = "INSERT INTO %s (%s,%s,%s,%s,%s) VALUES (?, ?, ?, ?, ?)".
-            formatted(TableTitle.USER_TABLE, ColumnLabel.USER_ROLE, ColumnLabel.USER_LOGIN, ColumnLabel.USER_PASSWORD,
-                    ColumnLabel.USER_NAME, ColumnLabel.USER_SURNAME);
-    private static final String DELETE_BY_ID_REQUEST = "DELETE FROM %s WHERE id = ?".formatted(TableTitle.USER_TABLE);
-    private static final String UPDATE_REQUEST = "UPDATE %s SET %s = ? WHERE id = ?".formatted(TableTitle.USER_TABLE,
-            ColumnLabel.USER_DEPARTMENT);
+    private static final String GET_ALL_REQUEST = "SELECT * FROM %s".formatted(SQLTableTitle.USER_TABLE);
+    private static final String GET_BY_ID_REQUEST = "SELECT * FROM %s WHERE id = ?".formatted(SQLTableTitle.USER_TABLE);
+    private static final String CREATE_REQUEST = "INSERT INTO %s (%s,%s,%s,%s,%s,%s) VALUES (?, ?, ?, ?, ?, ?)".
+            formatted(SQLTableTitle.USER_TABLE, SQLColumnLabel.USER_ROLE, SQLColumnLabel.USER_LOGIN, SQLColumnLabel.USER_PASSWORD,
+                    SQLColumnLabel.USER_NAME, SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE);
+    private static final String DELETE_BY_ID_REQUEST = "DELETE FROM %s WHERE id = ?".formatted(SQLTableTitle.USER_TABLE);
+    private static final String UPDATE_REQUEST = "UPDATE %s SET %s = ? WHERE id = ?".formatted(SQLTableTitle.USER_TABLE,
+            SQLColumnLabel.USER_DEPARTMENT);
     private static final String CHECK_LOGIN_REQUEST = "SELECT * FROM %s WHERE %s = ? AND %s = ?"
-            .formatted(TableTitle.USER_TABLE, ColumnLabel.USER_LOGIN, ColumnLabel.USER_PASSWORD);
-    private static final String FIND_BY_LOGIN_REQUEST = "SELECT * FROM %s WHERE %s = ?".formatted(TableTitle.USER_TABLE,
-                    ColumnLabel.USER_LOGIN);
+            .formatted(SQLTableTitle.USER_TABLE, SQLColumnLabel.USER_LOGIN, SQLColumnLabel.USER_PASSWORD);
+    private static final String FIND_BY_LOGIN_REQUEST = "SELECT * FROM %s WHERE %s = ?".formatted(SQLTableTitle.USER_TABLE,
+                    SQLColumnLabel.USER_LOGIN);
     private static final String GET_ROLE_REQUEST = ("SELECT %s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s = ?").
-            formatted(ColumnLabel.ROLE, TableTitle.USER_TABLE, TableTitle.ROLE_TABLE,TableTitle.USER_TABLE,
-                    ColumnLabel.USER_ROLE, TableTitle.ROLE_TABLE, ColumnLabel.ID, TableTitle.USER_TABLE, ColumnLabel.USER_LOGIN);
+            formatted(SQLColumnLabel.ROLE, SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLTableTitle.USER_TABLE,
+                    SQLColumnLabel.USER_ROLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID, SQLTableTitle.USER_TABLE, SQLColumnLabel.USER_LOGIN);
 
-    public UserDAOImpl(ConnectionPool connectionPool) {
-        this.connectionPool = connectionPool;
+    private UserDAOImpl() {}
+
+    private static final UserDAOImpl instance = new UserDAOImpl();
+
+    public static UserDAOImpl getInstance() {
+        return instance;
     }
 
 
@@ -42,40 +45,40 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public List<User> getAll() throws DAOException {
         UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
-        return requestOp.findAll(GET_ALL_REQUEST,connectionPool);
+        return requestOp.findAll(GET_ALL_REQUEST);
     }
 
     @Override
     public User getEntityById(int id) throws DAOException{
         UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
-        return  requestOp.findByParameters(GET_BY_ID_REQUEST, connectionPool, id).get(0);
+        return  requestOp.findByParameters(GET_BY_ID_REQUEST, id).get(0);
     }
 
     @Override
     public boolean update(User entity) throws DAOException{
         UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
-        return universalRequestOp.update(UPDATE_REQUEST, connectionPool, entity.getDepartmentsId(), entity.getId());
+        return universalRequestOp.update(UPDATE_REQUEST, entity.getDepartmentsId(), entity.getId());
     }
 
     @Override
     public boolean delete(int id) throws DAOException {
         UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
-        return universalRequestOp.delete(DELETE_BY_ID_REQUEST, connectionPool, id);
+        return universalRequestOp.delete(DELETE_BY_ID_REQUEST, id);
     }
 
     @Override
     public int create(User entity) throws DAOException{
         UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
-        return universalRequestOp.create(CREATE_REQUEST,connectionPool, entity.getRoleId(),
+        return universalRequestOp.create(CREATE_REQUEST, entity.getRoleId(),
                 entity.getLogin(),
-                entity.getPassword(), entity.getName(), entity.getSurname());
+                entity.getPassword(), entity.getName(), entity.getSurname(), entity.getPhone());
     }
 
     public boolean authorized(String login, String password) throws DAOException {
         UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
         boolean authorized = false;
         List<User> users;
-        users = requestOp.findByParameters(CHECK_LOGIN_REQUEST, connectionPool, login, password);
+        users = requestOp.findByParameters(CHECK_LOGIN_REQUEST, login, password);
         if (users.size()>0) {
             authorized=true;
         }
@@ -84,12 +87,12 @@ public class UserDAOImpl implements UserDAO {
 
     public boolean isLoginExist(String login) throws DAOException {
         UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
-        return requestOp.findByParameters(FIND_BY_LOGIN_REQUEST, connectionPool, login).size() == 1;
+        return requestOp.findByParameters(FIND_BY_LOGIN_REQUEST, login).size() == 1;
     }
 
     public String getRole(String login) throws DAOException {
         UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
-        return requestOp.getRole(GET_ROLE_REQUEST, connectionPool, login);
+        return requestOp.getRole(GET_ROLE_REQUEST, login);
     }
 
 }

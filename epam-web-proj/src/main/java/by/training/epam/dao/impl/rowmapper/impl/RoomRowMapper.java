@@ -2,7 +2,7 @@ package by.training.epam.dao.impl.rowmapper.impl;
 
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
-import by.training.epam.dao.impl.tableinfo.ColumnLabel;
+import by.training.epam.dao.impl.tableinfo.SQLColumnLabel;
 import by.training.epam.entity.Room;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -17,15 +17,15 @@ public class RoomRowMapper implements RowMapper<Room> {
     private static final Logger log = Logger.getLogger(RoomRowMapper.class);
 
     @Override
-    public List<Room> fillFields(ResultSet resultSet) throws DAOException {
+    public List<Room> map(ResultSet resultSet) throws DAOException {
         List<Room> list = new ArrayList<>();
         try {
             while (resultSet.next()) {
                 Room room = new Room();
-                room.setId(resultSet.getInt(ColumnLabel.ID));
-                room.setDepartmentId(resultSet.getInt(ColumnLabel.ROOM_DEPARTMENT_ID));
-                room.setLeadingDrId(resultSet.getInt(ColumnLabel.ROOM_LEADING_DR_ID));
-                room.setNumber(resultSet.getInt(ColumnLabel.ROOM_NUMBER));
+                room.setId(resultSet.getInt(SQLColumnLabel.ID));
+                room.setDepartmentId(resultSet.getInt(SQLColumnLabel.ROOM_DEPARTMENT_ID));
+                room.setLeadingDrId(resultSet.getInt(SQLColumnLabel.ROOM_LEADING_DR_ID));
+                room.setNumber(resultSet.getInt(SQLColumnLabel.ROOM_NUMBER));
                 list.add(room);
             }
         } catch (SQLException e) {

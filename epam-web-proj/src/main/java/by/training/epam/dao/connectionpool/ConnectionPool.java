@@ -19,7 +19,13 @@ public class ConnectionPool {
     private final String password;
     private int poolSize;
 
-    ConnectionPool() {
+    private static final ConnectionPool instance = new ConnectionPool();
+
+    static ConnectionPool getInstance() {
+        return instance;
+    }
+
+    private ConnectionPool() {
         this.driverName = DBProperties.DRIVER;
         this.url = DBProperties.URL;
         this.user = DBProperties.USER;
@@ -32,7 +38,7 @@ public class ConnectionPool {
     }
 
 
-    void initPoolData() throws ConnectionPoolException {
+    public void initPoolData() throws ConnectionPoolException {
         try {
             Class.forName(driverName);
             givenAwayConQueue = new ArrayBlockingQueue<>(poolSize);
@@ -54,7 +60,7 @@ public class ConnectionPool {
     }
 
     public Connection takeConnection() throws ConnectionPoolException {
-        Connection connection = null;
+        Connection connection;
         try {
             connection = connectionQueue.take();
             givenAwayConQueue.add(connection);

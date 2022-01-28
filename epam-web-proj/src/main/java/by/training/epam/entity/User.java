@@ -12,16 +12,22 @@ public class User implements Serializable {
     private String name;
     private String surname;
     private int departmentsId;
+    private String phone;
 
     public User() {}
 
-    public User(String login, String password, String name, String surname, int roleId) {
+    public User(String login, String password, String name, String surname, int roleId, String phone) {
         this.login = login;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.roleId = roleId;
+        this.phone = phone;
     }
+
+    public String getPhone() { return phone; }
+
+    public void setPhone(String phone) { this.phone = phone; }
 
     public void setId(int id) {
         this.id = id;
@@ -84,22 +90,24 @@ public class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && roleId == user.roleId && departmentsId == user.departmentsId && login.equals(user.login) && password.equals(user.password) && name.equals(user.name) && surname.equals(user.surname);
+        return id == user.id && roleId == user.roleId && departmentsId == user.departmentsId && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(phone, user.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, roleId, login, password, name, surname, departmentsId);
+        return Objects.hash(id, roleId, login, password, name, surname, departmentsId, phone);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                ", role_id=" + roleId +
+                "id=" + id +
+                ", roleId=" + roleId +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", departments_id=" + departmentsId +
+                ", departmentsId=" + departmentsId +
+                ", phone='" + phone + '\'' +
                 '}';
     }
 }

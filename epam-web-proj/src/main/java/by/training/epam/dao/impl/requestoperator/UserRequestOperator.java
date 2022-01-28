@@ -6,5 +6,5 @@ import by.training.epam.entity.User;
 
 public interface UserRequestOperator extends RequestOperator<User>{
 
-    String getRole(String SQLRequest, ConnectionPool connectionPool, String login) throws DAOException;
+    String getRole(String SQLRequest, String login) throws DAOException;
 }

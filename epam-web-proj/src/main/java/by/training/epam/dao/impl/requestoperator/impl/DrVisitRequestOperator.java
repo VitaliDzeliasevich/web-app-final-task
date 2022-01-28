@@ -2,6 +2,7 @@ package by.training.epam.dao.impl.requestoperator.impl;
 
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.connectionpool.ConnectionPoolFactory;
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
@@ -32,13 +33,13 @@ public class DrVisitRequestOperator implements RequestOperator<DrVisit> {
     }
 
     @Override
-    public List<DrVisit> findAll(String SQLRequest, ConnectionPool connectionPool) throws DAOException {
+    public List<DrVisit> findAll(String SQLRequest) throws DAOException {
         List<DrVisit> list;
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -46,7 +47,7 @@ public class DrVisitRequestOperator implements RequestOperator<DrVisit> {
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
             resultSet = preparedStatement.executeQuery();
-            list  = fieldsMapper.fillFields(resultSet);
+            list  = fieldsMapper.map(resultSet);
         } catch (SQLException throwables) {
             log.log(Level.ERROR, throwables);
             throw new DAOException(throwables);
@@ -67,14 +68,14 @@ public class DrVisitRequestOperator implements RequestOperator<DrVisit> {
     }
 
     @Override
-    public List<DrVisit> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes)
+    public List<DrVisit> findByParameters(String SQLRequest, Object... attributes)
             throws DAOException{
         List<DrVisit> list = new ArrayList<>();
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -85,7 +86,7 @@ public class DrVisitRequestOperator implements RequestOperator<DrVisit> {
                 preparedStatement.setObject(i+1,attributes[i]);
             }
             resultSet = preparedStatement.executeQuery();
-            list  = fieldsMapper.fillFields(resultSet);
+            list  = fieldsMapper.map(resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {

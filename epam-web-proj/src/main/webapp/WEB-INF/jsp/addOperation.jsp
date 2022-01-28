@@ -2,34 +2,49 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
 <html>
+
+        <fmt:setLocale value="${sessionScope.localization}" />
+        <fmt:setBundle basename="locale" var="loc" scope="session" />
+
+            <fmt:message bundle="${loc}" key="operationAdded" var="operationAdded" />
+            <fmt:message bundle="${loc}" key="operationNotAdded" var="operationNotAdded" />
+            <fmt:message bundle="${loc}" key="radical" var="radical" />
+            <fmt:message bundle="${loc}" key="palliative" var="palliative" />
+            <fmt:message bundle="${loc}" key="plastic" var="plastic" />
+            <fmt:message bundle="${loc}" key="type" var="type" />
+            <fmt:message bundle="${loc}" key="plannedDate" var="plannedDate" />
+            <fmt:message bundle="${loc}" key="goBack" var="goBack" />
+
+<jsp:include page="default/header.jsp" />
+
     <body>
             <c:if test="${not empty requestScope.created and requestScope.created eq 'true'}">
-                                <p style="color: green"> Operation is successfully appointed</p>
+                                <p style="color: green"> <c:out value="${operationAdded}"/> </p>
                             </c:if>
                             <c:if test="${not empty requestScope.created and requestScope.created eq 'false'}">
-                                <p style="color: red"> Operation has not been appointed</p>
+                                <p style="color: red"> <c:out value="${operationNotAdded}"/></p>
                             </c:if>
                             <c:remove var="discharged" />
             <form action="MyController" method="post">
             <table>
             <input type="hidden" name="command" value="addNewOperation" />
             <tbody>
-            <c:if test="${empty requestScope.patientID}">
+            <c:if test="${empty requestScope.patientId}">
             <tr>
                 <td>Patient id:</td>
                 <td> <input type="text" name="patientId"  value="" /> </td>
             </tr>
             </c:if>
             <tr>
-                <td>Type:</td>
+                <td><c:out value="${type}"/>:</td>
                 <td><select name= "type" >
-                    <option value = "1" > Radical</option >
-                    <option value = "2" > Palliative</option >
-                    <option value = "3" > Plastic</option >
+                    <option value = "1" > <c:out value="${radical}"/></option >
+                    <option value = "2" > <c:out value="${palliative}"/></option >
+                    <option value = "3" > <c:out value="${plastic}"/></option >
                     </select></td>
             </tr>
             <tr>
-            <td>Planned Date:</td>
+            <td><c:out value="${plannedDate}"/>:</td>
             <td><input type="date" name="plannedDate"  value="" /></td>
             </tr>
             <tr>
@@ -42,5 +57,5 @@
             </form>
     </body>
     <br>
-            <a href ="MyController?command=GO_TO_MAIN">Go back</a>
+            <a href ="MyController?command=GO_TO_MAIN"><c:out value="${goBack}"/></a>
 </html>

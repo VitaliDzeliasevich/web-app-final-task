@@ -1,6 +1,6 @@
 package by.training.epam.controller;
 
-import by.training.epam.controller.util.ParameterName;
+import by.training.epam.controller.util.JSPParameter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Controller extends HttpServlet {
 
-    private static final CommandProvider provider = new CommandProvider();
+    private static final CommandProvider provider = CommandProvider.getInstance();
 
     public Controller() {
         super();
@@ -27,7 +27,7 @@ public class Controller extends HttpServlet {
     }
 
     public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        Command command = provider.getCommand(req.getParameter(ParameterName.COMMAND));
+        Command command = provider.getCommand(req.getParameter(JSPParameter.COMMAND));
         command.execute(req,resp);
     }
 }

@@ -4,9 +4,9 @@ import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.exeption.DAOException;
 
 public interface UniversalRequestOperator {
-    int create(String SQLRequest, ConnectionPool connectionPool, Object...attributes) throws DAOException;
+    int create(String SQLRequest, Object...attributes) throws DAOException;
 
-    boolean delete(String SQLRequest, ConnectionPool connectionPool, int id) throws DAOException;
+    boolean delete(String SQLRequest, int id) throws DAOException;
 
-    boolean update(String SQLRequest, ConnectionPool connectionPool, Object...attributes) throws DAOException;
+    boolean update(String SQLRequest, Object...attributes) throws DAOException;
 }

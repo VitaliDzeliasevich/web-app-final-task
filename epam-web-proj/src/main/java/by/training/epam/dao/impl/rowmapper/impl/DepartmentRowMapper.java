@@ -2,7 +2,7 @@ package by.training.epam.dao.impl.rowmapper.impl;
 
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
-import by.training.epam.dao.impl.tableinfo.ColumnLabel;
+import by.training.epam.dao.impl.tableinfo.SQLColumnLabel;
 import by.training.epam.entity.Department;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -16,16 +16,16 @@ public class DepartmentRowMapper implements RowMapper<Department> {
     private static final Logger log = Logger.getLogger(DepartmentRowMapper.class);
 
     @Override
-    public List<Department> fillFields(ResultSet resultSet) throws DAOException{
+    public List<Department> map(ResultSet resultSet) throws DAOException{
         List<Department> list = new ArrayList<>();
         try {
             while (resultSet.next()) {
                 Department department = new Department();
-                department.setId(resultSet.getInt(ColumnLabel.ID));
-                department.setHospitalId(resultSet.getInt(ColumnLabel.DEPARTMENT_HOSPITAL_ID));
-                department.setDepartmentTypeId(resultSet.getInt(ColumnLabel.DEPARTMENT_TYPE_ID));
-                department.setNumber(resultSet.getInt(ColumnLabel.DEPARTMENT_NUMBER));
-                department.setPhone(resultSet.getString(ColumnLabel.DEPARTMENT_PHONE));
+                department.setId(resultSet.getInt(SQLColumnLabel.ID));
+                department.setHospitalId(resultSet.getInt(SQLColumnLabel.DEPARTMENT_HOSPITAL_ID));
+                department.setDepartmentTypeId(resultSet.getInt(SQLColumnLabel.DEPARTMENT_TYPE_ID));
+                department.setNumber(resultSet.getInt(SQLColumnLabel.DEPARTMENT_NUMBER));
+                department.setPhone(resultSet.getString(SQLColumnLabel.DEPARTMENT_PHONE));
                 list.add(department);
             }
         } catch (SQLException e) {

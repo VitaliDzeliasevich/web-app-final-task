@@ -25,10 +25,15 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <listener>
+    <listener-class>by.training.epam.controller.listener.ConnectionPoolInitializer</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>FrontController</servlet-name>
     <servlet-class>by.training.epam.controller.Controller</servlet-class>
   </servlet>
+
   <servlet-mapping>
     <servlet-name>FrontController</servlet-name>
     <url-pattern>/MyController</url-pattern>

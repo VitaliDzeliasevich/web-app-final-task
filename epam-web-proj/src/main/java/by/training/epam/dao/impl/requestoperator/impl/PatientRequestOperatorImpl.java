@@ -1,14 +1,13 @@
 package by.training.epam.dao.impl.requestoperator.impl;
 
-import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.connectionpool.ConnectionPoolFactory;
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.PatientRequestOperator;
-import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
 import by.training.epam.dao.impl.rowmapper.impl.PatientRowMapper;
-import by.training.epam.dao.impl.tableinfo.ColumnLabel;
-import by.training.epam.dao.impl.tableinfo.TableTitle;
+import by.training.epam.dao.impl.tableinfo.SQLColumnLabel;
+import by.training.epam.dao.impl.tableinfo.SQLTableTitle;
 import by.training.epam.entity.DiseaseHistory;
 import by.training.epam.entity.Patient;
 import org.apache.log4j.Level;
@@ -16,14 +15,13 @@ import org.apache.log4j.Logger;
 
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PatientRequestOperatorImpl implements PatientRequestOperator {
 
     private final static Logger log = Logger.getLogger(PatientRequestOperatorImpl.class);
 
-    private final static RowMapper<Patient> fieldsMapper= new PatientRowMapper();
+    private final static RowMapper<Patient> rowMapper = new PatientRowMapper();
 
     private final static PatientRequestOperatorImpl instance = new PatientRequestOperatorImpl();
 
@@ -34,13 +32,13 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
     }
 
     @Override
-    public List<Patient> findAll(String SQLRequest, ConnectionPool connectionPool) throws DAOException{
+    public List<Patient> findAll(String SQLRequest) throws DAOException{
         List<Patient> list;
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -48,7 +46,7 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
             resultSet = preparedStatement.executeQuery();
-            list  = fieldsMapper.fillFields(resultSet);
+            list  = rowMapper.map(resultSet);
         } catch (SQLException throwables) {
             log.log(Level.ERROR, throwables);
             throw new DAOException(throwables);
@@ -62,21 +60,21 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
                 }
                 connection.close();
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                log.log(Level.ERROR, throwables);
             }
         }
         return list;
     }
 
     @Override
-    public List<Patient> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes)
+    public List<Patient> findByParameters(String SQLRequest, Object... attributes)
             throws DAOException{
         List<Patient> list;
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -87,7 +85,7 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
                 preparedStatement.setObject(i+1,attributes[i]);
             }
             resultSet = preparedStatement.executeQuery();
-            list  = fieldsMapper.fillFields(resultSet);
+            list  = rowMapper.map(resultSet);
         } catch (SQLException throwables) {
             log.log(Level.ERROR, throwables);
             throw new DAOException(throwables);
@@ -101,26 +99,26 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
                 }
                 connection.close();
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                log.log(Level.ERROR, throwables);
             }
         }
         return list;
     }
 
-    public boolean createWithHistory(ConnectionPool connectionPool, Patient patient) throws DAOException {
+    public boolean createWithHistory(Patient patient) throws DAOException {
         boolean created =false;
         String patientQuery = "INSERT INTO %s (%s,%s,%s,%s,%s) VALUES (?, ?, ?, ?, ?)"
-                            .formatted(TableTitle.PATIENT_TABLE, ColumnLabel.PATIENT_ROOM_ID, ColumnLabel.PATIENT_SURNAME,
-                                        ColumnLabel.PATIENT_NAME, ColumnLabel.PATIENT_SEX, ColumnLabel.PATIENT_BIRTHDATE);
+                            .formatted(SQLTableTitle.PATIENT_TABLE, SQLColumnLabel.PATIENT_ROOM_ID, SQLColumnLabel.PATIENT_SURNAME,
+                                        SQLColumnLabel.PATIENT_NAME, SQLColumnLabel.PATIENT_SEX, SQLColumnLabel.PATIENT_BIRTHDATE);
 
         String historyQuery = "INSERT INTO %s (%s,%s,%s) VALUES (?, ?, ?)"
-                                     .formatted(TableTitle.DISEASE_HISTORY_TABLE, ColumnLabel.DISEASE_HISTORY_PATIENT_ID,
-                            ColumnLabel.DISEASE_HISTORY_ADMISSION_DATE, ColumnLabel.DISEASE_HISTORY_ADMISSION_DIAGNOSIS);
+                                     .formatted(SQLTableTitle.DISEASE_HISTORY_TABLE, SQLColumnLabel.DISEASE_HISTORY_PATIENT_ID,
+                            SQLColumnLabel.DISEASE_HISTORY_ADMISSION_DATE, SQLColumnLabel.DISEASE_HISTORY_ADMISSION_DIAGNOSIS);
         int generatedPatientId =0;
         Connection connection;
         PreparedStatement preparedStatement = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
             connection.setAutoCommit(false);
         } catch (ConnectionPoolException | SQLException e) {
             log.log(Level.ERROR, e);
@@ -158,6 +156,7 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
             try {
                 connection.rollback();
             } catch (SQLException e) {
+                log.log(Level.ERROR,e);
                 throw new DAOException(e);
             }
             throw new DAOException(throwables);
@@ -167,28 +166,28 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
                     preparedStatement.close();
                 }
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                log.log(Level.ERROR, throwables);
             }
             try {
                 connection.close();
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                log.log(Level.ERROR, throwables);
             }
         }
         return created;
     }
 
-    public boolean discharge(ConnectionPool connectionPool, DiseaseHistory history) throws DAOException {
+    public boolean discharge(DiseaseHistory history) throws DAOException {
         boolean discharged =false;
         String updateQuery = "UPDATE %s INNER JOIN %s ON %s = %s.%s SET %s = ?, %s = ?, %s = 1 WHERE %s.%s = ?"
-                .formatted(TableTitle.DISEASE_HISTORY_TABLE, TableTitle.PATIENT_TABLE,
-                        ColumnLabel.DISEASE_HISTORY_PATIENT_ID, TableTitle.PATIENT_TABLE, ColumnLabel.ID,
-                        ColumnLabel.DISEASE_HISTORY_DISCHARGING_DATE, ColumnLabel.DISEASE_HISTORY_EPICRYSIS,
-                        ColumnLabel.PATIENT_IS_DISCHARGED, TableTitle.DISEASE_HISTORY_TABLE, ColumnLabel.ID);
+                .formatted(SQLTableTitle.DISEASE_HISTORY_TABLE, SQLTableTitle.PATIENT_TABLE,
+                        SQLColumnLabel.DISEASE_HISTORY_PATIENT_ID, SQLTableTitle.PATIENT_TABLE, SQLColumnLabel.ID,
+                        SQLColumnLabel.DISEASE_HISTORY_DISCHARGING_DATE, SQLColumnLabel.DISEASE_HISTORY_EPICRYSIS,
+                        SQLColumnLabel.PATIENT_IS_DISCHARGED, SQLTableTitle.DISEASE_HISTORY_TABLE, SQLColumnLabel.ID);
         Connection connection;
         PreparedStatement preparedStatement = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -209,6 +208,7 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
             try {
                 connection.rollback();
             } catch (SQLException e) {
+                log.log(Level.ERROR, e);
                 throw new DAOException(e);
             }
             throw new DAOException(throwables);

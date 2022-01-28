@@ -2,16 +2,9 @@ package by.training.epam.dao.connectionpool;
 
 public class ConnectionPoolFactory {
 
-    private static final ConnectionPool connectionPool = new ConnectionPool();
+    private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
     private static final ConnectionPoolFactory instance = new ConnectionPoolFactory();
 
-    static {
-        try {
-            connectionPool.initPoolData();
-        } catch (ConnectionPoolException e) {
-            e.printStackTrace();
-        }
-    }
 
     private ConnectionPoolFactory() {}
 

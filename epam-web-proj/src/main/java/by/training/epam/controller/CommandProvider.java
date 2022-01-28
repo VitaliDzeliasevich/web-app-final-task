@@ -1,6 +1,6 @@
 package by.training.epam.controller;
-
-import by.training.epam.controller.gotocommand.*;
+import by.training.epam.controller.impl.*;
+import by.training.epam.controller.impl.gotocommand.*;
 import by.training.epam.controller.util.CommandName;
 
 import java.util.HashMap;
@@ -8,10 +8,19 @@ import java.util.Map;
 
 public class CommandProvider {
 
-    private final Map<String, Command> commands = new HashMap<>();
+    private static final CommandProvider instance = new CommandProvider();
 
-    public CommandProvider() {
+    public static CommandProvider getInstance() {
+        return instance;
+    }
 
+    private CommandProvider() {
+
+        commands.put(CommandName.GO_TO_ERROR_PAGE, new GoToErrorPageCommand());
+        commands.put(CommandName.GO_TO_UPDATE_ANALYSIS,new GoToUpdateAnalysisCommand());
+        commands.put(CommandName.UPDATE_ANALYSIS_COMMAND,new UpdateAnalysisCommand());
+        commands.put(CommandName.SHOW_PATIENT_ANALYZES, new ShowPatientAnalysisCommand());
+        commands.put(CommandName.LOG_OUT, new LogOutCommand());
         commands.put(CommandName.GO_TO_PATIENT_PAGE, new GoToPatientPageCommand());
         commands.put(CommandName.ADD_NEW_CONSULTATION, new AddConsultationCommand());
         commands.put(CommandName.ADD_NEW_OPERATION, new AddOperationCommand());
@@ -19,8 +28,8 @@ public class CommandProvider {
         commands.put(CommandName.GO_TO_ADD_OPERATION_PAGE, new GoToAddOperationPageCommand());
         commands.put(CommandName.GO_TO_CONSULTATION_PAGE, new GoToAddConsultationPage());
         commands.put(CommandName.GO_TO_DISCHARGING_PAGE, new GoToDischargePageCommand());
-        commands.put(CommandName.GO_TO_INDEX_PAGE, new GoToIndexPageCommand());
-        commands.put(CommandName.LOGINATION, new LoginationCommand());
+        commands.put(CommandName.GO_TO_INITIAL_PAGE, new GoToInitialPageCommand());
+        commands.put(CommandName.LOGINATION, new LogInCommand());
         commands.put(CommandName.GO_TO_REGISTRATION_PAGE, new GoToRegistrationPageCommand());
         commands.put(CommandName.REGISTRATION, new RegistrationCommand());
         commands.put(CommandName.REGISTRATION_DETAILS, new RegistrationDetailsCommand());
@@ -32,8 +41,10 @@ public class CommandProvider {
         commands.put(CommandName.ADD_NEW_DIAGNOSTIC, new AddDiagnosticCommand());
         commands.put(CommandName.GO_TO_ADD_ANALYSIS_PAGE, new GoToAddAnalysisPageCommand());
         commands.put(CommandName.GO_TO_ADD_DIAGNOSTIC_PAGE, new GoToAddDiagnosticPageCommand());
-        commands.put(CommandName.CHANGE_LANGUAGE, new ChangeLanguageCommand());
+        commands.put(CommandName.SET_LOCALE, new SetLocaleCommand());
     }
+
+    private final Map<String, Command> commands = new HashMap<>();
 
     public Command getCommand(String key) {
         return commands.get(key);

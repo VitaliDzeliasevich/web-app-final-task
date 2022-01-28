@@ -2,7 +2,7 @@ package by.training.epam.dao.impl.rowmapper.impl;
 
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
-import by.training.epam.dao.impl.tableinfo.ColumnLabel;
+import by.training.epam.dao.impl.tableinfo.SQLColumnLabel;
 import by.training.epam.entity.Analysis;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -25,18 +25,16 @@ public class AnalysisRowMapper implements RowMapper<Analysis> {
     private AnalysisRowMapper() {}
 
     @Override
-    public List<Analysis> fillFields(ResultSet resultSet) throws DAOException{
+    public List<Analysis> map(ResultSet resultSet) throws DAOException{
         List<Analysis> list = new ArrayList<>();
         try {
             while (resultSet.next()) {
                 Analysis analysis = new Analysis();
-                analysis.setId(resultSet.getInt(ColumnLabel.ID));
-                analysis.setPatientId(resultSet.getInt(ColumnLabel.PATIENT_ID));
-                analysis.setAnalysisTypeId(resultSet.getInt(ColumnLabel.ANALYSIS_TYPE_ID));
-                analysis.setLabDrId(resultSet.getInt(ColumnLabel.ANALYSIS_LAB_DR_ID));
-                analysis.setAppointmentDate(resultSet.getString(ColumnLabel.APPOINTMENT_DATE));
-                analysis.setExecutionDate(resultSet.getString(ColumnLabel.EXECUTION_DATE));
-                analysis.setResult(resultSet.getString(ColumnLabel.RESULT));
+                analysis.setId(resultSet.getInt(SQLColumnLabel.ID));
+                analysis.setType(resultSet.getString(SQLColumnLabel.TYPE));
+                analysis.setAppointmentDate(resultSet.getString(SQLColumnLabel.APPOINTMENT_DATE));
+                analysis.setExecutionDate(resultSet.getString(SQLColumnLabel.EXECUTION_DATE));
+                analysis.setResult(resultSet.getString(SQLColumnLabel.RESULT));
                 list.add(analysis);
             }
         } catch (SQLException e) {

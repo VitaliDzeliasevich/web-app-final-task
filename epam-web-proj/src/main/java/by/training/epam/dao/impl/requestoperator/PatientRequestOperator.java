@@ -7,7 +7,7 @@ import by.training.epam.entity.Patient;
 
 public interface PatientRequestOperator extends RequestOperator<Patient>{
 
-    boolean createWithHistory(ConnectionPool connectionPool, Patient patient) throws DAOException;
+    boolean createWithHistory(Patient patient) throws DAOException;
 
-    boolean discharge(ConnectionPool connectionPool, DiseaseHistory history) throws DAOException;
+    boolean discharge(DiseaseHistory history) throws DAOException;
 }

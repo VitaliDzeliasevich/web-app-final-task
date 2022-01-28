@@ -5,12 +5,15 @@ import java.io.IOException;
 
 public class CharsetFilter implements Filter {
 
+    private static final String ENCODING_CONFIG = "requestEncoding";
+    private static final String ENCODING_TYPE = "utf-8";
+
     private String encoding;
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        encoding = filterConfig.getInitParameter("requestEncoding");
-        if (encoding==null) {encoding="utf-8";}
+    public void init(FilterConfig filterConfig) {
+        encoding = filterConfig.getInitParameter(ENCODING_CONFIG);
+        if (encoding==null) {encoding = ENCODING_TYPE;}
     }
 
     @Override

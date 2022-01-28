@@ -1,5 +1,7 @@
 package by.training.epam.service;
 
+import by.training.epam.service.impl.*;
+
 public final class ServiceFactory {
     private static final ServiceFactory instance = new ServiceFactory();
 

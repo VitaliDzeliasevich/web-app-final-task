@@ -2,6 +2,7 @@ package by.training.epam.dao.impl.requestoperator.impl;
 
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.connectionpool.ConnectionPoolFactory;
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
@@ -32,13 +33,13 @@ public class ConsultingRequestOperator implements RequestOperator<Consultation> 
     }
 
     @Override
-    public List<Consultation> findAll(String SQLRequest, ConnectionPool connectionPool) throws DAOException {
+    public List<Consultation> findAll(String SQLRequest) throws DAOException {
         List<Consultation> list = new ArrayList<>();
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -46,7 +47,7 @@ public class ConsultingRequestOperator implements RequestOperator<Consultation> 
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
             resultSet = preparedStatement.executeQuery();
-            list  = rowMapper.fillFields(resultSet);
+            list  = rowMapper.map(resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {
@@ -66,14 +67,14 @@ public class ConsultingRequestOperator implements RequestOperator<Consultation> 
     }
 
     @Override
-    public List<Consultation> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes)
+    public List<Consultation> findByParameters(String SQLRequest, Object... attributes)
             throws DAOException{
         List<Consultation> list = new ArrayList<>();
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -84,7 +85,7 @@ public class ConsultingRequestOperator implements RequestOperator<Consultation> 
                 preparedStatement.setObject(i+1,attributes[i]);
             }
             resultSet = preparedStatement.executeQuery();
-            list  = rowMapper.fillFields(resultSet);
+            list  = rowMapper.map(resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } finally {

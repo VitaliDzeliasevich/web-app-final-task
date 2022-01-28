@@ -3,8 +3,8 @@ package by.training.epam.dao.impl.requestoperator.impl;
 
 import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
+import by.training.epam.dao.connectionpool.ConnectionPoolFactory;
 import by.training.epam.dao.exeption.DAOException;
-import by.training.epam.dao.impl.AnalysisDAOImpl;
 import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.rowmapper.RowMapper;
 import by.training.epam.dao.impl.rowmapper.impl.AnalysisRowMapper;
@@ -16,7 +16,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AnalysisRequestOperator implements RequestOperator<Analysis> {
@@ -32,14 +31,14 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
     }
 
     @Override
-    public List<Analysis> findAll(String SQLRequest, ConnectionPool connectionPool) throws DAOException {
+    public List<Analysis> findAll(String SQLRequest) throws DAOException {
         RowMapper<Analysis> rowMapper = AnalysisRowMapper.getInstance();
         List<Analysis> list;
         Connection connection;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -47,7 +46,7 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
         try {
             preparedStatement = connection.prepareStatement(SQLRequest);
             resultSet = preparedStatement.executeQuery();
-            list  = rowMapper.fillFields(resultSet);
+            list  = rowMapper.map(resultSet);
         } catch (SQLException throwables) {
             log.log(Level.ERROR, throwables);
             throw new DAOException(throwables);
@@ -68,7 +67,7 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
     }
 
     @Override
-    public List<Analysis> findByParameters(String SQLRequest, ConnectionPool connectionPool, Object... attributes)
+    public List<Analysis> findByParameters(String SQLRequest, Object... attributes)
             throws DAOException{
         RowMapper<Analysis> rowMapper = AnalysisRowMapper.getInstance();
         List<Analysis> list;
@@ -76,7 +75,7 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            connection = connectionPool.takeConnection();
+            connection = ConnectionPoolFactory.getInstance().getConnectionPool().takeConnection();
         } catch (ConnectionPoolException e) {
             log.log(Level.ERROR, e);
             throw new DAOException(e);
@@ -87,7 +86,7 @@ public class AnalysisRequestOperator implements RequestOperator<Analysis> {
                 preparedStatement.setObject(i+1,attributes[i]);
             }
             resultSet = preparedStatement.executeQuery();
-            list  = rowMapper.fillFields(resultSet);
+            list  = rowMapper.map(resultSet);
         } catch (SQLException throwables) {
             log.log(Level.ERROR, throwables);
             throw new DAOException(throwables);

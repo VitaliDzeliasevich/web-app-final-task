@@ -1,5 +1,19 @@
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
+
 <html>
     <body>
+            <c:if test="${requestScope.loginExists}">
+                <p style="color:red"><c:out value="Login ${requestScope.login} already exists."/></p>
+            </c:if>
+            <c:remove var="loginExists" />
+
+            <c:if test="${requestScope.incorrectPassword}">
+                 <p style="color:red"><c:out value="Incorrect login or password has been input. Password must contain at least 1 Capital letter and 1 digit"/></p>
+            </c:if>
+            <c:remove var="incorrectPassword" />
+
             <form action="MyController" method="post">
                 <table>
                     <input type="hidden" name="command" value="registration" />
@@ -26,5 +40,5 @@
             </form>
     </body>
     <br>
-        <a href ="MyController?command=GO_TO_INDEX">Go back</a>
+        <a href ="MyController?command=GO_TO_MAIN">Go back</a>
 </html>

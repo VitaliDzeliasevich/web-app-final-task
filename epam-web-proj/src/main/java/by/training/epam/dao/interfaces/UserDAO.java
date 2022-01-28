@@ -12,5 +12,4 @@ public interface UserDAO extends AbstractDAO<User> {
 
     String getRole(String login) throws DAOException;
 
-
 }
