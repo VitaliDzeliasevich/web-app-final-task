@@ -2,6 +2,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
 <html>
+<header>
+
+<jsp:include page="default/footer.jsp" />
+
+</header>
 <link rel="stylesheet" href="table.css">
         <fmt:setLocale value="${sessionScope.localization}" />
         <fmt:setBundle basename="locale" var="loc" scope="session" />
@@ -98,6 +103,6 @@
            </table>
    </c:if>
 </div>
+<a id="footer" href ="MyController?command=GO_TO_MAIN">Go to main page</a>
 </body>
-<a href ="MyController?command=GO_TO_MAIN">Go to main page</a>
 </html>

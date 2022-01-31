@@ -4,10 +4,10 @@ import by.training.epam.controller.Command;
 import by.training.epam.controller.util.CommandName;
 import by.training.epam.controller.util.JSPParameter;
 import by.training.epam.controller.util.JSPPath;
-import by.training.epam.entity.Patient;
-import by.training.epam.service.impl.PatientService;
+import by.training.epam.entity.User;
 import by.training.epam.service.ServiceFactory;
 import by.training.epam.service.exception.ServiceException;
+import by.training.epam.service.impl.UserService;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -16,35 +16,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class GoToPatientPageCommand implements Command {
+public class GoToPersonalInfoCommand implements Command {
 
-    private final Logger log = Logger.getLogger(GoToPatientPageCommand.class);
+    private final Logger log = Logger.getLogger(GoToPersonalInfoCommand.class);
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        int patientId;
-        if (request.getParameter(JSPParameter.PATIENT_ID)!=null) {
-            patientId = Integer.parseInt(request.getParameter(JSPParameter.PATIENT_ID));
-            request.getSession().setAttribute(JSPParameter.PATIENT_ID, patientId);
-        } else {
-            patientId = (int) request.getSession().getAttribute(JSPParameter.PATIENT_ID);
-        }
+        String login = (String) request.getSession().getAttribute(JSPParameter.LOGIN);
 
-        PatientService patientService = ServiceFactory.getInstance().getPatientService();
-        Patient patient = null;
+        UserService service = ServiceFactory.getInstance().getUserService();
+        User user = null;
         try {
-            patient = patientService.getEntityById(patientId);
+            user = service.getByLogin(login);
         } catch (ServiceException e) {
-            log.log(Level.ERROR,"Patient getting by ID error", e);
+            log.log(Level.ERROR,"USER getting by LOGIN error", e);
             String errorMessage = "Smth went wrong, please try later :(";
             request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
             response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
-        String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_PATIENT_PAGE;
+        String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_PERSONAL_INFO;
         request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
-        request.getSession().setAttribute(JSPParameter.PATIENT, patient);
-        request.getRequestDispatcher(JSPPath.PATIENT_PAGE_PATH).forward(request,response);
-
-
+        request.getSession().setAttribute(JSPParameter.USER, user);
+        request.getRequestDispatcher(JSPPath.PERSONAL_INFO_PATH).forward(request,response);
     }
 }

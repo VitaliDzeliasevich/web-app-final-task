@@ -1,6 +1,5 @@
 package by.training.epam.dao.impl.requestoperator.impl;
 
-import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.connectionpool.ConnectionPoolException;
 import by.training.epam.dao.connectionpool.ConnectionPoolFactory;
 import by.training.epam.dao.exeption.DAOException;
@@ -93,7 +92,7 @@ public class UserRequestOperatorImpl implements UserRequestOperator {
             log.log(Level.ERROR,throwables);
             throw new DAOException(throwables);
         } finally {
-            try { ///////////// в одном трае не закрывается!
+            try {
                 if (resultSet != null) {
                     resultSet.close();
                 }} catch (SQLException throwables) {
@@ -140,7 +139,7 @@ public class UserRequestOperatorImpl implements UserRequestOperator {
             log.log(Level.ERROR,throwables);
             throw new DAOException(throwables);
         } finally {
-            try { ///////////// в одном трае не закрывается!
+            try {
                 if (resultSet != null) {
                     resultSet.close();
                 }} catch (SQLException throwables) {

@@ -11,8 +11,10 @@ public class User implements Serializable {
     private String password;
     private String name;
     private String surname;
+    private String role;
     private int departmentsId;
     private String phone;
+    private int isBlocked;
 
     public User() {}
 
@@ -85,17 +87,29 @@ public class User implements Serializable {
         return departmentsId;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public int getIsBlocked() { return isBlocked; }
+
+    public void setBlocked(int blocked) { this.isBlocked = blocked;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && roleId == user.roleId && departmentsId == user.departmentsId && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(phone, user.phone);
+        return id == user.id && roleId == user.roleId && departmentsId == user.departmentsId && isBlocked == user.isBlocked && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(role, user.role) && Objects.equals(phone, user.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, roleId, login, password, name, surname, departmentsId, phone);
+        return Objects.hash(id, roleId, login, password, name, surname, role, departmentsId, phone, isBlocked);
     }
 
     @Override
@@ -103,6 +117,7 @@ public class User implements Serializable {
         return "User{" +
                 "id=" + id +
                 ", roleId=" + roleId +
+                ", role='" + role + '\'' +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
@@ -110,4 +125,5 @@ public class User implements Serializable {
                 ", phone='" + phone + '\'' +
                 '}';
     }
+
 }

@@ -1,6 +1,11 @@
- <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
+<header>
+<jsp:include page="default/header.jsp" />
+<jsp:include page="default/footer.jsp" />
+</header>
     <body>
             <c:if test="${requestScope.incorrectPhone}">
                         <p style="color:red"><c:out value="Incorrect phone number. Please follow pattern: (xx)-xxx-xx-xx"/></p>
@@ -44,5 +49,5 @@
             </form>
     </body>
 
-    <a href ="MyController?command=GO_TO_REGISTRATION">Go back</a>
+    <a id="footer" href ="MyController?command=GO_TO_REGISTRATION">Go back</a>
 </html>

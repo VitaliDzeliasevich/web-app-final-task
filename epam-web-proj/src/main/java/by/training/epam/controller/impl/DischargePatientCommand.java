@@ -44,11 +44,10 @@ public class DischargePatientCommand implements Command {
         }
 
         if (discharged) {
-            request.setAttribute(JSPParameter.DISCHARGED, "true");
-            request.getRequestDispatcher(JSPPath.DISCHARGE_PAGE_PATH).forward(request,response);
+            request.setAttribute(JSPParameter.DISCHARGED, true);
         } else {
             request.setAttribute(JSPParameter.DISCHARGED, "false");
-            request.getRequestDispatcher(JSPPath.DISCHARGE_PAGE_PATH).forward(request,response);
         }
+        request.getRequestDispatcher(JSPPath.DISCHARGE_PAGE_PATH).forward(request,response);
     }
 }

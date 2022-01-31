@@ -2,6 +2,9 @@ package by.training.epam.controller.util;
 
 public final class CommandName {
 
+    public static String BLOCK_USER = "BLOCK_USER";
+    public static String SHOW_ALL_USERS = "SHOW_ALL_USERS";
+    public static String GO_TO_PERSONAL_INFO = "GO_TO_PERSONAL_INFO";
     public static String GO_TO_ERROR_PAGE = "GO_TO_ERROR_PAGE";
     public static String UPDATE_ANALYSIS_COMMAND = "UPDATE_ANALYSIS_COMMAND";
     public static String SHOW_PATIENT_ANALYZES = "SHOW_PATIENT_ANALYZES";

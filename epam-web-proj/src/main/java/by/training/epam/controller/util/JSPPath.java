@@ -14,5 +14,6 @@ public final class JSPPath {
     public static final String REGISTRATION_PAGE_PATH = "/WEB-INF/jsp/registration.jsp";
     public static final String PATIENT_PAGE_PATH = "/WEB-INF/jsp/patientPage.jsp";
     public static final String UPDATE_ANALYSIS_PATH = "/WEB-INF/jsp/updateAnalysis.jsp";
+    public static final String PERSONAL_INFO_PATH = "/WEB-INF/jsp/personalInfo.jsp";
 
 }

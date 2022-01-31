@@ -16,6 +16,9 @@ public class CommandProvider {
 
     private CommandProvider() {
 
+        commands.put(CommandName.BLOCK_USER, new BlockUserCommand());
+        commands.put(CommandName.SHOW_ALL_USERS, new ShowAllUsersCommand());
+        commands.put(CommandName.GO_TO_PERSONAL_INFO, new GoToPersonalInfoCommand());
         commands.put(CommandName.GO_TO_ERROR_PAGE, new GoToErrorPageCommand());
         commands.put(CommandName.GO_TO_UPDATE_ANALYSIS,new GoToUpdateAnalysisCommand());
         commands.put(CommandName.UPDATE_ANALYSIS_COMMAND,new UpdateAnalysisCommand());

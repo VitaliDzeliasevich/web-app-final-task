@@ -3,7 +3,12 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
 
 <html>
+<header>
+<jsp:include page="default/header.jsp" />
+<jsp:include page="default/footer.jsp" />
+</header>
     <body>
+    <br><br><br><br><br>
             <c:if test="${requestScope.loginExists}">
                 <p style="color:red"><c:out value="Login ${requestScope.login} already exists."/></p>
             </c:if>
@@ -14,7 +19,7 @@
             </c:if>
             <c:remove var="incorrectPassword" />
 
-            <form action="MyController" method="post">
+            <form  action="MyController" method="post">
                 <table>
                     <input type="hidden" name="command" value="registration" />
                         <tbody>
@@ -40,5 +45,5 @@
             </form>
     </body>
     <br>
-        <a href ="MyController?command=GO_TO_MAIN">Go back</a>
+        <a id="footer" href ="MyController?command=GO_TO_MAIN">Go back</a>
 </html>

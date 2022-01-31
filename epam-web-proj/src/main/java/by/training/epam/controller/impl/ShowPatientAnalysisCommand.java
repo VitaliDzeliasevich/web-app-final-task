@@ -39,9 +39,6 @@ public class ShowPatientAnalysisCommand implements Command {
         }
         request.setAttribute(JSPParameter.FOUND, true);
         request.setAttribute(JSPParameter.FOUND_ANALYSIS, analysisList);
-
-
-
         request.getRequestDispatcher(JSPPath.PATIENT_PAGE_PATH).forward(request,response);
     }
 }

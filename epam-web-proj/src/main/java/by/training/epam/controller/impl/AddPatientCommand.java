@@ -43,6 +43,8 @@ public class AddPatientCommand implements Command {
             response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
 
+        response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_MAIN_PAGE);
+
 
     }
 }

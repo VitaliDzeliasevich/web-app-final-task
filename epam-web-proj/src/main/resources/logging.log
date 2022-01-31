@@ -1,8 +1,0 @@
-2022-01-25 19:19:41 ERROR UniversalRequestOpImpl:60 - com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Incorrect date value: '' for column 'appointment_date' at row 1
-2022-01-26 14:28:51 ERROR LogInCommand:48 - by.training.epam.service.exception.ServiceException: WTF
-2022-01-26 15:15:53 ERROR PatientRowMapper:39 - java.sql.SQLException: Column 'admissiom_date' not found.
-2022-01-26 15:22:06 ERROR PatientRowMapper:39 - java.sql.SQLException: Column 'admission_date' not found.
-2022-01-26 15:26:03 ERROR PatientRowMapper:39 - java.sql.SQLException: Column 'admission_diagnosis' not found.
-2022-01-26 15:43:27 ERROR PatientRowMapper:39 - java.sql.SQLException: Column 'admission_diagnosis' not found.
-2022-01-26 16:27:45 ERROR PatientRowMapper:39 - java.sql.SQLException: Column 'admission_diagnosis' not found.
-2022-01-26 16:52:40 ERROR PatientRowMapper:39 - java.sql.SQLException: Column 'admission_diagnosis' not found.

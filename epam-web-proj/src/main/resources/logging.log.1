@@ -1,7 +1,46 @@
-2022-01-03 20:55:56 ERROR UserRequestOperator:135 - java.sql.SQLSyntaxErrorException: Unknown column 'users.role' in 'where clause'
-2022-01-03 20:55:56 ERROR UserService:109 - by.training.epam.dao.exeption.DAOException: java.sql.SQLSyntaxErrorException: Unknown column 'users.role' in 'where clause'
-2022-01-03 20:55:56 ERROR LoginationCommand:42 - by.training.epam.service.exception.ServiceException: by.training.epam.dao.exeption.DAOException: java.sql.SQLSyntaxErrorException: Unknown column 'users.role' in 'where clause'
-2022-01-08 20:19:13 ERROR UniversalRequestOpImpl:60 - java.sql.SQLSyntaxErrorException: Unknown column 'analysis_type_id' in 'field list'
-2022-01-08 20:19:13 ERROR AnalysisService:52 - by.training.epam.dao.exeption.DAOException: java.sql.SQLSyntaxErrorException: Unknown column 'analysis_type_id' in 'field list'
-2022-01-08 20:23:21 ERROR UniversalRequestOpImpl:60 - java.sql.SQLSyntaxErrorException: Unknown column 'analysis_type_id' in 'field list'
-2022-01-08 20:23:21 ERROR AnalysisService:52 - by.training.epam.dao.exeption.DAOException: java.sql.SQLSyntaxErrorException: Unknown column 'analysis_type_id' in 'field list'
+2022-01-30 15:38:07 ERROR UserRowMapper:35 - java.sql.SQLException: Column 'departments_id' not found.
+2022-01-30 15:38:07 ERROR LogInCommand:47 - Logination error
+by.training.epam.service.exception.ServiceException: by.training.epam.dao.exeption.DAOException: java.sql.SQLException: Column 'departments_id' not found.
+	at by.training.epam.service.impl.UserService.authorized(UserService.java:58)
+	at by.training.epam.controller.impl.LogInCommand.execute(LogInCommand.java:30)
+	at by.training.epam.controller.Controller.execute(Controller.java:31)
+	at by.training.epam.controller.Controller.doPost(Controller.java:26)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:647)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:305)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at by.training.epam.controller.filter.CharsetFilter.doFilter(CharsetFilter.java:23)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:222)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:123)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:502)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:171)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:100)
+	at org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:953)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:408)
+	at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1041)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:603)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:312)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+Caused by: by.training.epam.dao.exeption.DAOException: java.sql.SQLException: Column 'departments_id' not found.
+	at by.training.epam.dao.impl.rowmapper.impl.UserRowMapper.map(UserRowMapper.java:36)
+	at by.training.epam.dao.impl.requestoperator.impl.UserRequestOperatorImpl.findByParameters(UserRequestOperatorImpl.java:90)
+	at by.training.epam.dao.impl.UserDAOImpl.authorized(UserDAOImpl.java:95)
+	at by.training.epam.service.impl.UserService.authorized(UserService.java:56)
+	... 27 more
+Caused by: java.sql.SQLException: Column 'departments_id' not found.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:89)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:63)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.findColumn(ResultSetImpl.java:581)
+	at com.mysql.cj.jdbc.result.ResultSetImpl.getInt(ResultSetImpl.java:843)
+	at by.training.epam.dao.impl.rowmapper.impl.UserRowMapper.map(UserRowMapper.java:31)
+	... 30 more

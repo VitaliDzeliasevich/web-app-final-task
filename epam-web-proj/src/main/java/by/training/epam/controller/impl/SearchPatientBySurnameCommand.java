@@ -23,13 +23,10 @@ public class SearchPatientBySurnameCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
+
         String patientSurname = request.getParameter(JSPParameter.SEARCH_PATIENT);
         List<Patient> patients = null;
 
-        if (patientSurname == null) {
-            patients = (List<Patient>) request.getAttribute(JSPParameter.SEARCH_PATIENT);
-            request.setAttribute(JSPParameter.FOUND, true);
-        }
         try {
             patients = ServiceFactory.getInstance().getPatientService().getBySurname(patientSurname);
         } catch (ServiceException e) {
@@ -38,12 +35,18 @@ public class SearchPatientBySurnameCommand implements Command {
             request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
             response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
-
-        if (patients!=null) {
+            String URL;
+        if (patients!=null && patients.size()>0) {
+            URL = CommandName.CONTROLLER_COMMAND + CommandName.SEARCH_PATIENT_BY_SURNAME + "&" +
+                    JSPParameter.FOUND + "=" + true + "&" + JSPParameter.SEARCHED_PATIENT + "=" + patients;
             request.setAttribute(JSPParameter.FOUND, true);
             request.setAttribute(JSPParameter.SEARCHED_PATIENT,patients);
+        } else {
+            request.setAttribute(JSPParameter.FOUND, JSPParameter.FALSE);
+            URL = CommandName.CONTROLLER_COMMAND + CommandName.SEARCH_PATIENT_BY_SURNAME
+                    + "&" + JSPParameter.FOUND + "=" + JSPParameter.FALSE;
         }
-        RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPath.MAIN_PAGE_PATH);
-        dispatcher.forward(request,response);
+        request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
+        request.getRequestDispatcher(JSPPath.MAIN_PAGE_PATH).forward(request,response);
     }
 }

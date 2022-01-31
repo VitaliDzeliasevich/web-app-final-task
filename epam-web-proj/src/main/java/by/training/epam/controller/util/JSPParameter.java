@@ -34,10 +34,18 @@ public final class JSPParameter {
     public static final String EXECUTION_DATE ="executionDate";
     public static final String RESULT ="result";
     public static final String ERROR_MESSAGE ="ERROR_MESSAGE";
+    public static final String USER = "user";
+    public static final String USER_ID = "userId";
+
 
 
     public static final String SEARCHED_PATIENT = "searchedPatients";
     public static final String SEARCH_PATIENT = "searchPatient";
+    public static final String FOUND_USERS = "foundUsers";
+    public static final String ARE_USERS_FOUND = "areUsersFound";
+    public static final String FALSE = "false";
+    public static final String BLOCKED = "blocked";
+
 
     public static final String INVALID_AUTHORIZATION = "invalidAuthorization";
 

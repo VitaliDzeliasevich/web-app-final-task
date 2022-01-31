@@ -5,7 +5,6 @@ import by.training.epam.controller.util.CommandName;
 import by.training.epam.controller.util.JSPPath;
 import by.training.epam.controller.util.JSPParameter;
 import by.training.epam.entity.User;
-import by.training.epam.service.Service;
 import by.training.epam.service.ServiceFactory;
 import by.training.epam.service.impl.UserService;
 import by.training.epam.service.exception.ServiceException;

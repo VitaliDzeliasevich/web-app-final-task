@@ -2,7 +2,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
 <html>
-
+<header>
         <fmt:setLocale value="${sessionScope.localization}" />
         <fmt:setBundle basename="locale" var="loc" scope="session" />
 
@@ -13,11 +13,12 @@
             <fmt:message bundle="${loc}" key="dischargeDate" var="dischargeDate" />
             <fmt:message bundle="${loc}" key="diseaseHistoryID" var="diseaseHistoryID" />
             <fmt:message bundle="${loc}" key="goBack" var="goBack" />
-
+<jsp:include page="default/footer.jsp" />
 <jsp:include page="default/header.jsp" />
-
+<jsp:include page="default/localization.jsp" />
+</header>
     <body>
-                <c:if test="${not empty requestScope.discharged and requestScope.discharged eq 'true'}">
+                <c:if test="${requestScope.discharged}">
                     <p style="color: green"> <c:out value="${successfullyDischarged}"/></p>
                 </c:if>
                 <c:if test="${not empty requestScope.discharged and requestScope.discharged eq 'false'}">
@@ -30,7 +31,7 @@
                     <input type="hidden" name="command" value="dischargePatient" />
                         <tbody>
                         <tr>
-                        <td>DiseaseHistory ID:</td>
+                        <td><c:out value="${diseaseHistoryID}"/>:</td>
                         <td>
                                 <input type="text" name="diseaseHistoryId"  value="" />
                         </td>
@@ -56,6 +57,11 @@
                 </table>
             </form>
     </body>
-    <br>
-            <a href ="MyController?command=GO_TO_MAIN"><c:out value="${goBack}"/></a>
+            <c:if test="${empty requestScope.patientId}">
+                        <a id="footer" href ="MyController?command=GO_TO_MAIN"><c:out value="${goBack}"/></a>
+            </c:if>
+            <c:if test="${not empty requestScope.patientId}">
+                        <a id="footer" href ="MyController?command=GO_TO_PATIENT_PAGE"><c:out value="${goBack}"/></a>
+            </c:if>
+
 </html>

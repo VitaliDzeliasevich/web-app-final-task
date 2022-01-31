@@ -1,12 +1,15 @@
 package by.training.epam.controller.impl;
 
 import by.training.epam.controller.Command;
+import by.training.epam.controller.util.CommandName;
 import by.training.epam.controller.util.JSPPath;
 import by.training.epam.controller.util.JSPParameter;
 import by.training.epam.entity.Operation;
 import by.training.epam.service.impl.OperationService;
 import by.training.epam.service.ServiceFactory;
 import by.training.epam.service.exception.ServiceException;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AddOperationCommand implements Command {
+
+    private final Logger log = Logger.getLogger(AddOperationCommand.class);
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         int patientId = Integer.parseInt(request.getParameter(JSPParameter.PATIENT_ID));
@@ -26,7 +32,10 @@ public class AddOperationCommand implements Command {
         try {
            created = service.create(new Operation(patientId, operationTypeId, plannedDate));
         } catch (ServiceException e) {
-            e.printStackTrace();
+            log.log(Level.ERROR,"Adding operation error", e);
+            String errorMessage = "Adding operation, please try later.";
+            request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
+            response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
 
         if (created) {

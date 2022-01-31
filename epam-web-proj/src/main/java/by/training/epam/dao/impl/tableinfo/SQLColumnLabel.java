@@ -5,6 +5,7 @@ public class SQLColumnLabel {
     private SQLColumnLabel() {}
 
     public static final String ID = "id";
+    public static final String IS_BLOCKED = "is_blocked";
     public static final String USER_ROLE = "role_id";
     public static final String USER_LOGIN = "login";
     public static final String USER_PASSWORD = "password";

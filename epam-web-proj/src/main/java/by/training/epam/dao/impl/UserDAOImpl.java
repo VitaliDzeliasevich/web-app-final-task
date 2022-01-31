@@ -2,7 +2,6 @@ package by.training.epam.dao.impl;
 
 import by.training.epam.dao.impl.requestoperator.UserRequestOperator;
 import by.training.epam.dao.interfaces.UserDAO;
-import by.training.epam.dao.connectionpool.ConnectionPool;
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.UniversalRequestOperator;
 import by.training.epam.dao.impl.requestoperator.impl.UniversalRequestOpImpl;
@@ -16,7 +15,11 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
 
-    private static final String GET_ALL_REQUEST = "SELECT * FROM %s".formatted(SQLTableTitle.USER_TABLE);
+    private static final String GET_ALL_REQUEST = "SELECT %s.%s,%s,%s,%s,%s,%s,%s FROM %s INNER JOIN %s ON %s = %s.%s".formatted(
+            SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,SQLColumnLabel.USER_NAME,
+            SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE, SQLColumnLabel.ROLE, SQLColumnLabel.IS_BLOCKED,
+            SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.USER_ROLE,
+            SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID);
     private static final String GET_BY_ID_REQUEST = "SELECT * FROM %s WHERE id = ?".formatted(SQLTableTitle.USER_TABLE);
     private static final String CREATE_REQUEST = "INSERT INTO %s (%s,%s,%s,%s,%s,%s) VALUES (?, ?, ?, ?, ?, ?)".
             formatted(SQLTableTitle.USER_TABLE, SQLColumnLabel.USER_ROLE, SQLColumnLabel.USER_LOGIN, SQLColumnLabel.USER_PASSWORD,
@@ -24,13 +27,24 @@ public class UserDAOImpl implements UserDAO {
     private static final String DELETE_BY_ID_REQUEST = "DELETE FROM %s WHERE id = ?".formatted(SQLTableTitle.USER_TABLE);
     private static final String UPDATE_REQUEST = "UPDATE %s SET %s = ? WHERE id = ?".formatted(SQLTableTitle.USER_TABLE,
             SQLColumnLabel.USER_DEPARTMENT);
-    private static final String CHECK_LOGIN_REQUEST = "SELECT * FROM %s WHERE %s = ? AND %s = ?"
-            .formatted(SQLTableTitle.USER_TABLE, SQLColumnLabel.USER_LOGIN, SQLColumnLabel.USER_PASSWORD);
-    private static final String FIND_BY_LOGIN_REQUEST = "SELECT * FROM %s WHERE %s = ?".formatted(SQLTableTitle.USER_TABLE,
+    private static final String BLOCK_USER_REQUEST = "UPDATE %s SET %s = 1 WHERE id = ?".formatted
+            (SQLTableTitle.USER_TABLE, SQLColumnLabel.IS_BLOCKED);
+    private static final String CHECK_LOGIN_REQUEST = ("SELECT %s.%s,%s,%s,%s,%s,%s, %s FROM %s INNER JOIN %s ON %s = %s.%s" +
+            " WHERE %s = ? AND %s = ?")
+            .formatted(SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,SQLColumnLabel.USER_NAME,
+                    SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE, SQLColumnLabel.ROLE, SQLColumnLabel.IS_BLOCKED,
+                    SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.USER_ROLE,
+                    SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN, SQLColumnLabel.USER_PASSWORD);
+    private static final String FIND_BY_LOGIN_REQUEST = ("SELECT %s.%s,%s,%s,%s,%s,%s,%s FROM %s INNER JOIN %s ON %s = %s.%s" +
+            " WHERE %s = ?").formatted(SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,
+            SQLColumnLabel.USER_NAME, SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE, SQLColumnLabel.ROLE,
+            SQLColumnLabel.IS_BLOCKED, SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.USER_ROLE,
+            SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID,
                     SQLColumnLabel.USER_LOGIN);
     private static final String GET_ROLE_REQUEST = ("SELECT %s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s = ?").
             formatted(SQLColumnLabel.ROLE, SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLTableTitle.USER_TABLE,
-                    SQLColumnLabel.USER_ROLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID, SQLTableTitle.USER_TABLE, SQLColumnLabel.USER_LOGIN);
+                    SQLColumnLabel.USER_ROLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID, SQLTableTitle.USER_TABLE,
+                    SQLColumnLabel.USER_LOGIN);
 
     private UserDAOImpl() {}
 
@@ -95,4 +109,27 @@ public class UserDAOImpl implements UserDAO {
         return requestOp.getRole(GET_ROLE_REQUEST, login);
     }
 
+    @Override
+    public User getByLogin(String login) throws DAOException {
+        UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
+        return requestOp.findByParameters(FIND_BY_LOGIN_REQUEST,login).get(0);
+    }
+
+    @Override
+    public boolean blockUser(int id) throws DAOException {
+        UniversalRequestOperator requestOperator = UniversalRequestOpImpl.getInstance();
+        return requestOperator.update(BLOCK_USER_REQUEST,id);
+    }
+
+    @Override
+    public boolean checkIfBlocked(String login) throws DAOException {
+        User user;
+        boolean isNotBlocked = true;
+        UserRequestOperator requestOp = UserRequestOperatorImpl.getInstance();
+        user = requestOp.findByParameters(FIND_BY_LOGIN_REQUEST,login).get(0);
+        if (user.getIsBlocked() == 1) {
+            isNotBlocked = false;
+        }
+        return isNotBlocked;
+    }
 }

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class LogInCommand implements Command {
@@ -25,20 +26,26 @@ public class LogInCommand implements Command {
         String password = request.getParameter(JSPParameter.PASSWORD);
 
         UserService userService = ServiceFactory.getInstance().getUserService();
-
         try {
-            if (userService.authorized(login,password)) {
-                request.getSession().setAttribute(JSPParameter.LOGIN, login);
-                request.getSession().setAttribute(JSPParameter.ROLE, userService.getRole(login));
-                request.getSession().removeAttribute(JSPParameter.INVALID_AUTHORIZATION);
-
+            if (userService.authorized(login,password) && userService.isNotBlocked(login)) {
+                HttpSession session = request.getSession();
+                session.setAttribute(JSPParameter.LOGIN, login);
+                session.setAttribute(JSPParameter.ROLE, userService.getRole(login));
+                session.removeAttribute(JSPParameter.BLOCKED);
+                session.removeAttribute(JSPParameter.INVALID_AUTHORIZATION);
                 String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_MAIN_PAGE;
-                request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
+                session.setAttribute(JSPParameter.LAST_REQUEST, URL);
                 response.sendRedirect(URL);
-            } else {
-                if (request.getSession().getAttribute(JSPParameter.INVALID_AUTHORIZATION) == null) {
-                    request.getSession().setAttribute(JSPParameter.INVALID_AUTHORIZATION, true);
-                }
+            } else if (!userService.isNotBlocked(login)) {
+                request.getSession().setAttribute(JSPParameter.BLOCKED, true);
+                request.getSession().removeAttribute(JSPParameter.INVALID_AUTHORIZATION);
+                String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_INITIAL_PAGE;
+                request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
+                request.getRequestDispatcher(JSPPath.INITIAL_PAGE_PATH).forward(request,response);
+            }
+            else {
+                request.getSession().setAttribute(JSPParameter.INVALID_AUTHORIZATION, true);
+                request.getSession().removeAttribute(JSPParameter.BLOCKED);
                 String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_INITIAL_PAGE;
                 request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
                 request.getRequestDispatcher(JSPPath.INITIAL_PAGE_PATH).forward(request,response);

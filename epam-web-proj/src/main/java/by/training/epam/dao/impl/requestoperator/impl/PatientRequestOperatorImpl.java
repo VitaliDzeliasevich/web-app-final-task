@@ -201,7 +201,7 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
             if (updated ==0) {
                 throw new DAOException("Updating entity failed, no rows affected.");
             }
-            if (updated==1) {
+           else {
                 discharged=true;
             }
         } catch (SQLException throwables) {
@@ -218,11 +218,13 @@ public class PatientRequestOperatorImpl implements PatientRequestOperator {
                     preparedStatement.close();
                 }
             } catch (SQLException throwables) {
+                log.log(Level.ERROR, throwables);
                 throwables.printStackTrace();
             }
             try {
                 connection.close();
             } catch (SQLException throwables) {
+                log.log(Level.ERROR, throwables);
                 throwables.printStackTrace();
             }
         }

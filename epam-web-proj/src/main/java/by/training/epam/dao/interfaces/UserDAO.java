@@ -12,4 +12,10 @@ public interface UserDAO extends AbstractDAO<User> {
 
     String getRole(String login) throws DAOException;
 
+    User getByLogin(String login) throws DAOException;
+
+    boolean blockUser(int id) throws DAOException;
+
+    boolean checkIfBlocked(String login) throws DAOException;
+
 }

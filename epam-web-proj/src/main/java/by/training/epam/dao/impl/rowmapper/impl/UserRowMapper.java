@@ -24,12 +24,12 @@ public class UserRowMapper implements RowMapper<User> {
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getInt(SQLColumnLabel.ID));
-                user.setRoleId(resultSet.getInt(SQLColumnLabel.USER_ROLE));
+                user.setRole(resultSet.getString(SQLColumnLabel.ROLE));
                 user.setLogin(resultSet.getString(SQLColumnLabel.USER_LOGIN));
-                user.setPassword(null);
                 user.setName(resultSet.getString(SQLColumnLabel.USER_NAME));
                 user.setSurname(resultSet.getString(SQLColumnLabel.USER_SURNAME));
-                user.setDepartmentsId(resultSet.getInt(SQLColumnLabel.USER_DEPARTMENT));
+                user.setPhone(resultSet.getString(SQLColumnLabel.PHONE));
+                user.setBlocked(resultSet.getInt(SQLColumnLabel.IS_BLOCKED));
                 userList.add(user);
             }
         } catch (SQLException e) {

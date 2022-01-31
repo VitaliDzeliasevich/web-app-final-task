@@ -2,6 +2,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
 <html>
+<header>
         <fmt:setLocale value="${sessionScope.localization}" />
         <fmt:setBundle basename="locale" var="loc" scope="session" />
 
@@ -17,7 +18,9 @@
             <fmt:message bundle="${loc}" key="goBack" var="goBack" />
 
 <jsp:include page="default/header.jsp" />
-
+<jsp:include page="default/footer.jsp" />
+<jsp:include page="default/localization.jsp" />
+</header>
     <body>
             <form action="MyController" method="post">
             <table>
@@ -74,5 +77,5 @@
             </form>
     </body>
     <br>
-            <a href ="MyController?command=GO_TO_MAIN"><c:out value="${goBack}"/></a>
+            <a id="footer" href ="MyController?command=GO_TO_MAIN"><c:out value="${goBack}"/></a>
 </html>

@@ -11,6 +11,7 @@
             <fmt:message bundle="${loc}" key="registration" var="registration" />
             <fmt:message bundle="${loc}" key="authorization" var="inputFields" />
             <fmt:message bundle="${loc}" key="invalidAuthorization" var="invalidAuthorization" />
+            <fmt:message bundle="${loc}" key="youAreBlocked" var="youAreBlocked" />
             <fmt:message bundle="${loc}" key="enter" var="enter" />
 
 
@@ -23,19 +24,21 @@
 <div class="container-fluid">
 <jsp:include page="default/header.jsp" />
 <jsp:include page="default/localization.jsp" />
-<br/>
+<br>
 <div align="center">
 <h1> Hospital System </h1>
 <br/><br/>
 <c:if test="${sessionScope.invalidAuthorization}">
     <p style="color:red"><c:out value="${invalidAuthorization}"/></p>
 </c:if>
+<c:if test="${sessionScope.blocked}">
+    <p style="color:red"><c:out value="${youAreBlocked}"/></p>
+</c:if>
 <c:if test="${!sessionScope.invalidAuthorization}">
     <h2> <c:out value="${inputFields}"/></h2>
 </c:if>
-<c:remove var="invalidAuthorization" />
-    <form action="MyController" method="post">
-        <table align="center">
+    <center><form action="MyController" method="post">
+        <table>
         <input type="hidden" name="command" value="logination" />
             <tbody>
             <tr>
@@ -57,7 +60,7 @@
              </tr>
              </tbody>
              </table>
-    </form>
+    </form></center>
     </div>
     </div>
     </body>

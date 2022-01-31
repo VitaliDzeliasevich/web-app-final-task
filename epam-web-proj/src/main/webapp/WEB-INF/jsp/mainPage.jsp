@@ -3,11 +3,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
 
 <html>
+<header>
         <link rel="stylesheet" href="table.css" type="text/css">
 
         <fmt:setLocale value="${sessionScope.localization}" />
         <fmt:setBundle basename="locale" var="loc" scope="session" />
-
             <fmt:message bundle="${loc}" key="select" var="select" />
             <fmt:message bundle="${loc}" key="searchPatientBySurname" var="surnameSearch" />
             <fmt:message bundle="${loc}" key="search" var="search" />
@@ -17,16 +17,27 @@
             <fmt:message bundle="${loc}" key="addNewOperation" var="newOperation" />
             <fmt:message bundle="${loc}" key="addNewConsultation" var="newConsultation" />
             <fmt:message bundle="${loc}" key="dischargePatient" var="dischargePatient" />
+            <fmt:message bundle="${loc}" key="name" var="name" />
+            <fmt:message bundle="${loc}" key="surname" var="surname" />
+            <fmt:message bundle="${loc}" key="role" var="role" />
+            <fmt:message bundle="${loc}" key="login" var="login" />
+            <fmt:message bundle="${loc}" key="phone" var="phone" />
+            <fmt:message bundle="${loc}" key="birthDate" var="birthDate" />
+            <fmt:message bundle="${loc}" key="department" var="department" />
+            <fmt:message bundle="${loc}" key="room" var="room" />
+            <fmt:message bundle="${loc}" key="noPatientsFound" var="noPatientsFound" />
 
-
-
+</header>
 
 <body>
 <div class="container-fluid">
 <jsp:include page="default/header.jsp" />
 
 <nav class="navbar navbar-light bg-light justify-content-between">
-  <a class="navbar-brand">HOSPITAL</a>
+  <form class="form-inline" action = "MyController" method ="get">
+            <input type= "hidden" name="command" value="GO_TO_PERSONAL_INFO" />
+            <input class="btn btn-primary" type= "submit" value = "Personal Info"/>
+      </form>
     <form class="form-inline" action = "MyController" method ="get">
           <input type= "hidden" name="command" value="searchPatientBySurname" />
           <input type = "text" name="searchPatient" minlength="1" required placeholder= "${surnameSearch}" / >
@@ -58,18 +69,23 @@
     </form>
     <jsp:include page="default/localization.jsp" />
     <a class="btn btn-primary" href ="MyController?command=LOG_OUT">LogOut</a>
-</nav>
-    </body> <br>
+</nav> <br>
         <c:if test="${sessionScope.role eq 'admin'}">
         <form align="right" action = "MyController" method ="post">
-                            <input type= "hidden" name="command" value="GO_TO_REGISTRATION" />
-                            <input class="btn btn-outline-warning" type="submit" value = "Registrate new User"/>
-                     </form>
+                       <input type= "hidden" name="command" value="GO_TO_REGISTRATION" />
+                       <input class="btn btn-outline-warning" type="submit" value = "Registrate new User"/>
+        </form>
+        <form align="right" action = "MyController" method ="post">
+                        <input type= "hidden" name="command" value="SHOW_ALL_USERS" />
+                        <input class="btn btn-outline-warning" type="submit" value = "Show All Users"/>
+        </form>
              <br> <br>
         </c:if>
-        <h1 align="center"> <c:out value="${sessionScope.role}"/>  , you`ve entered Hospital System </h1>
 
     <a  href="MyController?command=GO_TO_INDEX"><c:out value="${goBack}"/></a>
+     <c:if test="${not empty requestScope.found and requestScope.found eq 'false'}">
+     <p align="center" style="color:red"><c:out value="${noPatientsFound}"/></p>
+     </c:if>
     <c:if test="${requestScope.found}">
     <style type="text/css">
        TABLE {
@@ -84,7 +100,9 @@
        }
       </style>
        <table align="center">
-       <tr><th>Id</th><th>Surname</th><th>Name</th><th>BirthDate</th><th>Department</th><th>Room</th><th></th></tr>
+       <tr><th>Id</th><th><c:out value="${surname}"/></th><th><c:out value="${name}"/>
+       </th><th><c:out value="${birthDate}"/></th><th><c:out value="${department}"/>
+       </th><th><c:out value="${room}"/></th><th></th></tr>
                <c:forEach var="patient" items="${searchedPatients}">
                     <form action = "MyController" method ="get">
                <input type= "hidden" name="command" value="GO_TO_PATIENT_PAGE" />
@@ -97,5 +115,43 @@
                </c:forEach>
                </table>
        </c:if>
+
+       <c:if test="${requestScope.areUsersFound}">
+           <style type="text/css">
+              TABLE {
+               border-collapse: collapse;
+              }
+              TD, TH {
+               padding: 3px;
+               border: 1px solid black;
+              }
+              TH {
+               background: #b0e0e6;
+              }
+             </style>
+              <table align="center">
+              <tr><th>Id</th><th><c:out value="${login}"/></th><th><c:out value="${name}"/>
+              </th><th><c:out value="${surname}"/></th><th><c:out value="${role}"/></th><th><c:out value="${phone}"/>
+              </th><th></th><th></th></tr>
+                      <c:forEach var="user" items="${foundUsers}">
+                      <tr><td>${user.id}</td><td>${user.login}</td><td>${user.name}</td><td>${user.surname}</td>
+                      <td>${user.role}</td><td>${user.phone}</td>
+                        <td> <input class="btn btn-secondary" type="submit" value = "Open"/></td>
+                        <c:if test="${user.isBlocked != 1}">
+                        <form action = "MyController" method ="post">
+                        <input type="hidden" name="foundUsers" value = "${foundUsers}" />
+                        <input type="hidden" name="command" value = "BLOCK_USER" />
+                        <input type="hidden" name="userId" value = "${user.id}" />
+                        <td> <input class="btn btn-secondary" type="submit" value = "Block"/></td></tr>
+                           </form>
+                      </c:if>
+                      <c:if test="${user.isBlocked == 1}">
+                           <td> <input class="btn btn-secondary" type="submit" value = "Unblock"/></td></tr>
+                          </form>
+                      </c:if>
+                      </c:forEach>
+                      </table>
+       </c:if>
     </div>
+</body>
 </html>

@@ -31,7 +31,6 @@ public class PatientService implements Service<Patient> {
             patientDAO = DAOFactory.getInstance().getPatientDAO();
             list = patientDAO.getBySurname(surname);
         } catch (DAOException e) {
-            log.log(Level.ERROR,e);
             throw new ServiceException(e);
         }
             return list;
@@ -47,8 +46,7 @@ public class PatientService implements Service<Patient> {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
-/////////////////////////////////!!!!!!!!!!!!!!!!!!!
-        return true;
+        return discharged;
     }
 
     @Override
