@@ -14,13 +14,16 @@
             <fmt:message bundle="${loc}" key="type" var="type" />
             <fmt:message bundle="${loc}" key="plannedDate" var="plannedDate" />
             <fmt:message bundle="${loc}" key="goBack" var="goBack" />
+            <fmt:message bundle="${loc}" key="add" var="add" />
+            <fmt:message bundle="${loc}" key="addNewOperation" var="addNewOperation" />
 
 <jsp:include page="default/header.jsp" />
 <jsp:include page="default/footer.jsp" />
 <jsp:include page="default/localization.jsp" />
 </header>
+<h3 align="center"><c:out value="${addNewOperation}"/></h3>
     <body>
-            <c:if test="${not empty requestScope.created and requestScope.created eq 'true'}">
+            <c:if test="${true}">
                                 <p style="color: green"> <c:out value="${operationAdded}"/> </p>
                             </c:if>
                             <c:if test="${not empty requestScope.created and requestScope.created eq 'false'}">
@@ -37,6 +40,9 @@
                 <td> <input type="text" name="patientId"  value="" /> </td>
             </tr>
             </c:if>
+            <c:if test="${not empty requestScope.patientId}">
+                  <input type="hidden" name="patientId"  value="${requestScope.patientId}" />
+            </c:if>
             <tr>
                 <td><c:out value="${type}"/>:</td>
                 <td><select name= "type" >
@@ -51,7 +57,7 @@
             </tr>
             <tr>
             <td colspan="2">
-            <input type="submit" value="Enter" />
+            <input type="submit" value="${add}" />
             </td>
             </tr>
             </tbody>

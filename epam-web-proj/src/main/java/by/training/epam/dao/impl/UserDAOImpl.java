@@ -15,28 +15,32 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
 
-    private static final String GET_ALL_REQUEST = "SELECT %s.%s,%s,%s,%s,%s,%s,%s FROM %s INNER JOIN %s ON %s = %s.%s".formatted(
-            SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,SQLColumnLabel.USER_NAME,
-            SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE, SQLColumnLabel.ROLE, SQLColumnLabel.IS_BLOCKED,
-            SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.USER_ROLE,
-            SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID);
-    private static final String GET_BY_ID_REQUEST = "SELECT * FROM %s WHERE id = ?".formatted(SQLTableTitle.USER_TABLE);
-    private static final String CREATE_REQUEST = "INSERT INTO %s (%s,%s,%s,%s,%s,%s) VALUES (?, ?, ?, ?, ?, ?)".
-            formatted(SQLTableTitle.USER_TABLE, SQLColumnLabel.USER_ROLE, SQLColumnLabel.USER_LOGIN, SQLColumnLabel.USER_PASSWORD,
-                    SQLColumnLabel.USER_NAME, SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE);
+    private static final String GET_ALL_REQUEST = ("SELECT %s,%s.%s,%s,%s,%s,%s,%s,%s FROM %s INNER JOIN %s ON %s = %s.%s " +
+            "ORDER BY %s.%s ASC").formatted(SQLColumnLabel.USER_DEPARTMENT,SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,
+            SQLColumnLabel.USER_NAME, SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE, SQLColumnLabel.ROLE,
+            SQLColumnLabel.IS_BLOCKED, SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.USER_ROLE,
+            SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID, SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID);
+    private static final String GET_BY_ID_REQUEST = "SELECT * FROM %s WHERE %s = ?".formatted(SQLTableTitle.USER_TABLE,
+            SQLColumnLabel.ID);
+    private static final String CREATE_REQUEST = "INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s) VALUES (?, ?, ?, ?, ?, ? ,?)".
+            formatted(SQLTableTitle.USER_TABLE, SQLColumnLabel.USER_ROLE, SQLColumnLabel.USER_LOGIN,
+                    SQLColumnLabel.USER_PASSWORD, SQLColumnLabel.USER_NAME, SQLColumnLabel.USER_SURNAME,
+                    SQLColumnLabel.PHONE, SQLColumnLabel.USER_DEPARTMENT);
     private static final String DELETE_BY_ID_REQUEST = "DELETE FROM %s WHERE id = ?".formatted(SQLTableTitle.USER_TABLE);
     private static final String UPDATE_REQUEST = "UPDATE %s SET %s = ? WHERE id = ?".formatted(SQLTableTitle.USER_TABLE,
             SQLColumnLabel.USER_DEPARTMENT);
     private static final String BLOCK_USER_REQUEST = "UPDATE %s SET %s = 1 WHERE id = ?".formatted
             (SQLTableTitle.USER_TABLE, SQLColumnLabel.IS_BLOCKED);
-    private static final String CHECK_LOGIN_REQUEST = ("SELECT %s.%s,%s,%s,%s,%s,%s, %s FROM %s INNER JOIN %s ON %s = %s.%s" +
+    private static final String UNBLOCK_USER_REQUEST = "UPDATE %s SET %s = 0 WHERE id = ?".formatted
+            (SQLTableTitle.USER_TABLE, SQLColumnLabel.IS_BLOCKED);
+    private static final String CHECK_LOGIN_REQUEST = ("SELECT %s,%s.%s,%s,%s,%s,%s,%s, %s FROM %s INNER JOIN %s ON %s = %s.%s" +
             " WHERE %s = ? AND %s = ?")
-            .formatted(SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,SQLColumnLabel.USER_NAME,
+            .formatted(SQLColumnLabel.USER_DEPARTMENT,SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,SQLColumnLabel.USER_NAME,
                     SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE, SQLColumnLabel.ROLE, SQLColumnLabel.IS_BLOCKED,
                     SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.USER_ROLE,
                     SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN, SQLColumnLabel.USER_PASSWORD);
-    private static final String FIND_BY_LOGIN_REQUEST = ("SELECT %s.%s,%s,%s,%s,%s,%s,%s FROM %s INNER JOIN %s ON %s = %s.%s" +
-            " WHERE %s = ?").formatted(SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,
+    private static final String FIND_BY_LOGIN_REQUEST = ("SELECT %s,%s.%s,%s,%s,%s,%s,%s,%s FROM %s INNER JOIN %s ON %s = %s.%s" +
+            " WHERE %s = ?").formatted(SQLColumnLabel.USER_DEPARTMENT,SQLTableTitle.USER_TABLE,  SQLColumnLabel.ID, SQLColumnLabel.USER_LOGIN,
             SQLColumnLabel.USER_NAME, SQLColumnLabel.USER_SURNAME, SQLColumnLabel.PHONE, SQLColumnLabel.ROLE,
             SQLColumnLabel.IS_BLOCKED, SQLTableTitle.USER_TABLE, SQLTableTitle.ROLE_TABLE, SQLColumnLabel.USER_ROLE,
             SQLTableTitle.ROLE_TABLE, SQLColumnLabel.ID,
@@ -83,9 +87,8 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public int create(User entity) throws DAOException{
         UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
-        return universalRequestOp.create(CREATE_REQUEST, entity.getRoleId(),
-                entity.getLogin(),
-                entity.getPassword(), entity.getName(), entity.getSurname(), entity.getPhone());
+        return universalRequestOp.create(CREATE_REQUEST, entity.getRoleId(), entity.getLogin(), entity.getPassword(),
+                entity.getName(), entity.getSurname(), entity.getPhone(), entity.getDepartmentsId());
     }
 
     public boolean authorized(String login, String password) throws DAOException {
@@ -122,6 +125,12 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public boolean unblockUser(int id) throws DAOException {
+        UniversalRequestOperator requestOperator = UniversalRequestOpImpl.getInstance();
+        return requestOperator.update(UNBLOCK_USER_REQUEST, id);
+    }
+
+    @Override
     public boolean checkIfBlocked(String login) throws DAOException {
         User user;
         boolean isNotBlocked = true;
@@ -132,4 +141,5 @@ public class UserDAOImpl implements UserDAO {
         }
         return isNotBlocked;
     }
+
 }

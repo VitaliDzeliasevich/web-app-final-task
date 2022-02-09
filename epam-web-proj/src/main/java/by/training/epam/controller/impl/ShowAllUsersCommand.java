@@ -36,8 +36,10 @@ public class ShowAllUsersCommand implements Command {
             request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
             response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
+
         String URL = CommandName.CONTROLLER_COMMAND + CommandName.SHOW_ALL_USERS + "&" + JSPParameter.ARE_USERS_FOUND +
                 "=" + true + "&" + JSPParameter.FOUND_USERS + "=" + list;
+
         request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
         request.setAttribute(JSPParameter.ARE_USERS_FOUND, true);
         request.setAttribute(JSPParameter.FOUND_USERS, list);

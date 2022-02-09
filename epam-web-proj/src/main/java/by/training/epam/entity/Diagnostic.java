@@ -8,6 +8,7 @@ public class Diagnostic implements Serializable {
     private int id;
     private int patientId;
     private int diagnosticTypeId;
+    private String type;
     private int diagnosticDrId;
     private String appointmentDate;
     private String executionDate;
@@ -77,17 +78,25 @@ public class Diagnostic implements Serializable {
         return result;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Diagnostic that = (Diagnostic) o;
-        return id == that.id && patientId == that.patientId && diagnosticTypeId == that.diagnosticTypeId && diagnosticDrId == that.diagnosticDrId && Objects.equals(appointmentDate, that.appointmentDate) && Objects.equals(executionDate, that.executionDate) && Objects.equals(result, that.result);
+        return id == that.id && patientId == that.patientId && diagnosticTypeId == that.diagnosticTypeId && diagnosticDrId == that.diagnosticDrId && Objects.equals(type, that.type) && Objects.equals(appointmentDate, that.appointmentDate) && Objects.equals(executionDate, that.executionDate) && Objects.equals(result, that.result);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, patientId, diagnosticTypeId, diagnosticDrId, appointmentDate, executionDate, result);
+        return Objects.hash(id, patientId, diagnosticTypeId, type, diagnosticDrId, appointmentDate, executionDate, result);
     }
 
     @Override

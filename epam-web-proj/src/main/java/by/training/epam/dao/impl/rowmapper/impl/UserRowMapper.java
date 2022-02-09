@@ -23,6 +23,9 @@ public class UserRowMapper implements RowMapper<User> {
         try {
             while (resultSet.next()) {
                 User user = new User();
+                if (resultSet.getString(SQLColumnLabel.USER_DEPARTMENT) != null) {
+                    user.setDepartmentsId(resultSet.getInt(SQLColumnLabel.USER_DEPARTMENT));
+                }
                 user.setId(resultSet.getInt(SQLColumnLabel.ID));
                 user.setRole(resultSet.getString(SQLColumnLabel.ROLE));
                 user.setLogin(resultSet.getString(SQLColumnLabel.USER_LOGIN));

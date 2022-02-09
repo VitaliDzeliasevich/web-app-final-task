@@ -1,8 +1,10 @@
 package by.training.epam.service.validator;
 
+import by.training.epam.service.validator.exception.ValidationException;
+
+
+
 public interface Validator {
 
-    boolean validatePasswordAndLogin(String password, String login);
-
-    boolean validatePhoneNumber(String phone);
+   boolean validate(Object...attr) throws ValidationException;
 }

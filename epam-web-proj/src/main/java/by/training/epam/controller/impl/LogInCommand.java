@@ -30,24 +30,27 @@ public class LogInCommand implements Command {
             if (userService.authorized(login,password) && userService.isNotBlocked(login)) {
                 HttpSession session = request.getSession();
                 session.setAttribute(JSPParameter.LOGIN, login);
-                session.setAttribute(JSPParameter.ROLE, userService.getRole(login));
-                session.removeAttribute(JSPParameter.BLOCKED);
-                session.removeAttribute(JSPParameter.INVALID_AUTHORIZATION);
+                String role = userService.getRole(login);
+                session.setAttribute(JSPParameter.ROLE, role);
+                if (role.equals(JSPParameter.NURSE)) {
+                    int departmentId = userService.getByLogin(login).getDepartmentsId();
+                    session.setAttribute(JSPParameter.DEPARTMENT_ID, departmentId);
+                }
                 String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_MAIN_PAGE;
                 session.setAttribute(JSPParameter.LAST_REQUEST, URL);
                 response.sendRedirect(URL);
             } else if (!userService.isNotBlocked(login)) {
-                request.getSession().setAttribute(JSPParameter.BLOCKED, true);
-                request.getSession().removeAttribute(JSPParameter.INVALID_AUTHORIZATION);
-                String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_INITIAL_PAGE;
+                String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_INITIAL_PAGE  + "&" +
+                        JSPParameter.BLOCKED + "=" + true;
                 request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
+                request.setAttribute(JSPParameter.BLOCKED, true);
                 request.getRequestDispatcher(JSPPath.INITIAL_PAGE_PATH).forward(request,response);
             }
             else {
-                request.getSession().setAttribute(JSPParameter.INVALID_AUTHORIZATION, true);
-                request.getSession().removeAttribute(JSPParameter.BLOCKED);
-                String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_INITIAL_PAGE;
+                String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_INITIAL_PAGE + "&" +
+                        JSPParameter.INVALID_AUTHORIZATION + "=" + true;
                 request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
+                request.setAttribute(JSPParameter.INVALID_AUTHORIZATION, true);
                 request.getRequestDispatcher(JSPPath.INITIAL_PAGE_PATH).forward(request,response);
             }
         } catch (ServiceException e) {
@@ -57,7 +60,5 @@ public class LogInCommand implements Command {
             response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
     }
-
-
-    }
+}
 

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RowMapper<E> {
     List<E> map(ResultSet resultSet) throws DAOException;
+
 }

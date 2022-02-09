@@ -30,25 +30,38 @@ public class AddAnalysisCommand implements Command {
         String appointmentDate = request.getParameter(JSPParameter.APPOINTMENT_DATE);
 
         AnalysisService analysisService = ServiceFactory.getInstance().getAnalysisService();
-        boolean created = false;
+
 
         try {
-            created = analysisService.create(new Analysis(patientId, analysisType, appointmentDate));
-        } catch (ServiceException e) {
-            log.log(Level.ERROR,"Analysis Adding error", e);
-            String errorMessage = "Analysis Adding Error, please try later.";
-            request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
-            response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
+            if (analysisService.validateDate(appointmentDate)) {
+                boolean created = analysisService.create(new Analysis(patientId, analysisType, appointmentDate));
+                if (created) {
+                    String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ADD_ANALYSIS_PAGE + "&" +
+                            JSPParameter.PATIENT_ID + "=" + patientId + "&" + JSPParameter.CREATED + "=" + true;
+                    request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
 
-        }
+                    request.setAttribute(JSPParameter.CREATED, true);
+                } else {
+                    String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ADD_ANALYSIS_PAGE + "&" +
+                            JSPParameter.PATIENT_ID + "=" + patientId + "&" + JSPParameter.NOT_ADDED + "=" + true;
+                    request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
 
-        if (created) {
-            request.setAttribute(JSPParameter.CREATED, true);
-        } else {
-            request.setAttribute(JSPParameter.CREATED, "false");
-        }
-        request.setAttribute(JSPParameter.PATIENT_ID, patientId);
-        request.getRequestDispatcher(JSPPath.ADD_ANALYSIS_PAGE_PATH).forward(request,response);
-
+                    request.setAttribute(JSPParameter.NOT_ADDED, true);
+                }
+                request.setAttribute(JSPParameter.PATIENT_ID, patientId);
+                request.getRequestDispatcher(JSPPath.ADD_ANALYSIS_PAGE_PATH).forward(request,response);
+            } else {
+                String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ADD_ANALYSIS_PAGE + "&" +
+                        JSPParameter.PATIENT_ID + "=" + patientId + "&" + JSPParameter.INVALID_DATE + "=" + true;
+                request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
+                request.setAttribute(JSPParameter.INVALID_DATE, true);
+                request.getRequestDispatcher(JSPPath.ADD_ANALYSIS_PAGE_PATH).forward(request,response);
+            }
+        } catch(ServiceException e){
+                log.log(Level.ERROR, "Analysis Adding error", e);
+                String errorMessage = "Analysis Adding Error, please try later.";
+                request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
+                response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
+            }
     }
 }

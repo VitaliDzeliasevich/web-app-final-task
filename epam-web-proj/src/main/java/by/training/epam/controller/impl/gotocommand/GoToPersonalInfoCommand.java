@@ -22,7 +22,17 @@ public class GoToPersonalInfoCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String login = (String) request.getSession().getAttribute(JSPParameter.LOGIN);
+        String login;
+        if (request.getParameter(JSPParameter.LOGIN)==null) {
+            login = (String) request.getSession().getAttribute(JSPParameter.LOGIN);
+            String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_PERSONAL_INFO;
+            request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
+        } else {
+            login=request.getParameter(JSPParameter.LOGIN);
+            String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_PERSONAL_INFO + "&" + JSPParameter.LOGIN
+                    + "=" +login;
+            request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
+        }
 
         UserService service = ServiceFactory.getInstance().getUserService();
         User user = null;
@@ -34,8 +44,6 @@ public class GoToPersonalInfoCommand implements Command {
             request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
             response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
-        String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_PERSONAL_INFO;
-        request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
         request.getSession().setAttribute(JSPParameter.USER, user);
         request.getRequestDispatcher(JSPPath.PERSONAL_INFO_PATH).forward(request,response);
     }

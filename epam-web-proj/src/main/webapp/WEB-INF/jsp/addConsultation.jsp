@@ -17,11 +17,14 @@
             <fmt:message bundle="${loc}" key="type" var="type" />
             <fmt:message bundle="${loc}" key="appointmentDate" var="appointmentDate" />
             <fmt:message bundle="${loc}" key="goBack" var="goBack" />
+            <fmt:message bundle="${loc}" key="add" var="add" />
+            <fmt:message bundle="${loc}" key="addNewConsultation" var="addNewConsultation" />
 
 <jsp:include page="default/header.jsp" />
 <jsp:include page="default/footer.jsp" />
 <jsp:include page="default/localization.jsp" />
 </header>
+<h3 align="center"><c:out value="${addNewConsultation}"/></h3>
     <body>
             <c:if test="${requestScope.created}">
                                 <p style="color:green"> <c:out value="${consultationAdded}"/></p>
@@ -56,7 +59,7 @@
             </tr>
             <tr>
             <td colspan="2">
-            <input type="submit" value="Enter" />
+            <input type="submit" value="${add}" />
             </td>
             </tr>
             </tbody>

@@ -31,14 +31,27 @@ public final class JSPParameter {
     public static final String FOUND_ANALYSIS = "foundAnalysis";
     public static final String PATIENT = "patient";
     public static final String ANALYSIS_ID ="analysisId";
+    public static final String TREATMENT_ID ="treatmentId";
     public static final String EXECUTION_DATE ="executionDate";
     public static final String RESULT ="result";
     public static final String ERROR_MESSAGE ="ERROR_MESSAGE";
     public static final String USER = "user";
     public static final String USER_ID = "userId";
+    public static final String GROUP = "group";
+    public static final String DRUG_ID = "drugId";
+    public static final String WAY_OF_USING = "wayOfUsing";
+    public static final String START_DATE = "startDate";
+    public static final String END_DATE = "endDate";
+    public static final String DOSE = "dose";
+    public static final String NURSE = "nurse";
+    public static final String DEPARTMENT_ID = "departmentId";
+    public static final String DATE = "date";
 
 
 
+
+    public static final String FOUND_DIAGNOSTIC = "foundDiagnostic";
+    public static final String IS_DIAGNOSTIC_FOUND = "isDiagnosticFound";
     public static final String SEARCHED_PATIENT = "searchedPatients";
     public static final String SEARCH_PATIENT = "searchPatient";
     public static final String FOUND_USERS = "foundUsers";
@@ -48,8 +61,12 @@ public final class JSPParameter {
 
 
     public static final String INVALID_AUTHORIZATION = "invalidAuthorization";
+    public static final String INVALID_DATE = "invalidDate";
 
+    public static final String FOUND_TREATMENT = "foundTreatment";
     public static final String FOUND = "found";
+    public static final String ADDED = "added";
+    public static final String NOT_ADDED = "notAdded";
     public static final String UPDATED = "updated";
     public static final String DISCHARGED = "discharged";
     public static final String CREATED = "created";

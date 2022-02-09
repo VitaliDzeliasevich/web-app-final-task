@@ -25,8 +25,7 @@ public class DiagnosticRowMapper implements RowMapper<Diagnostic> {
                 Diagnostic diagnostic = new Diagnostic();
                 diagnostic.setId(resultSet.getInt(SQLColumnLabel.ID));
                 diagnostic.setPatientId(resultSet.getInt(SQLColumnLabel.DIAGNOSTIC_PATIENT_ID));
-                diagnostic.setDiagnosticTypeId(resultSet.getInt(SQLColumnLabel.DIAGNOSTIC_DIAGNOSTIC_TYPE_ID));
-                diagnostic.setDiagnosticDrId(resultSet.getInt(SQLColumnLabel.DIAGNOSTIC_DR_ID));
+                diagnostic.setType(resultSet.getString(SQLColumnLabel.DIAGNOSTIC_NAME));
                 diagnostic.setAppointmentDate(resultSet.getString(SQLColumnLabel.APPOINTMENT_DATE));
                 diagnostic.setExecutionDate(resultSet.getString(SQLColumnLabel.EXECUTION_DATE));
                 diagnostic.setResult(resultSet.getString(SQLColumnLabel.RESULT));

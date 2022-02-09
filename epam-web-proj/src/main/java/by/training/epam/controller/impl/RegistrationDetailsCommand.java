@@ -15,7 +15,6 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class RegistrationDetailsCommand implements Command {
@@ -24,24 +23,26 @@ public class RegistrationDetailsCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        HttpSession session = request.getSession();
-        String login = (String) session.getAttribute(JSPParameter.LOGIN);
-        String password = (String) session.getAttribute(JSPParameter.PASSWORD);
+        String login = request.getParameter(JSPParameter.LOGIN);
+        String password = request.getParameter(JSPParameter.PASSWORD);
         String name = request.getParameter(JSPParameter.NAME);
         String surname = request.getParameter(JSPParameter.SURNAME);
         int role = Integer.parseInt(request.getParameter(JSPParameter.POSITION));
+        int departmentId = Integer.parseInt(request.getParameter(JSPParameter.DEPARTMENT));
         String phone = request.getParameter(JSPParameter.PHONE);
 
         UserService userService = ServiceFactory.getInstance().getUserService();
-
-        if (!userService.validatePhone(phone)) {
-            request.setAttribute(JSPParameter.INCORRECT_PHONE, true);
-            request.getRequestDispatcher(JSPPath.REG_DETAILS_PAGE_PATH).forward(request, response);
-        } else {
-            boolean created = false;
-            try {
-                created = userService.create(new User(login, password, name, surname, role, phone));
-            } catch (ServiceException e) {
+        boolean created = false;
+        try {
+            if (!userService.validatePhone(phone)) {
+                request.setAttribute(JSPParameter.LOGIN, login);
+                request.setAttribute(JSPParameter.PASSWORD, password);
+                request.setAttribute(JSPParameter.INCORRECT_PHONE, true);
+                request.getRequestDispatcher(JSPPath.REG_DETAILS_PAGE_PATH).forward(request, response);
+            } else {
+                created = userService.create(new User(login, password, name, surname, role, phone,departmentId));
+            }
+        }catch (ServiceException e) {
                 log.log(Level.ERROR,"Registration error", e);
                 String errorMessage = "Smth went wrong, please try later.";
                 request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
@@ -49,7 +50,8 @@ public class RegistrationDetailsCommand implements Command {
             }
 
             if (created) {
-                session.setAttribute(JSPParameter.ROLE, role);
+                String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_MAIN_PAGE;
+                request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
                 RequestDispatcher dispatcher = request.getRequestDispatcher(JSPPath.MAIN_PAGE_PATH);
                 dispatcher.forward(request, response);
             } else {
@@ -59,4 +61,3 @@ public class RegistrationDetailsCommand implements Command {
             }
         }
     }
-}

@@ -28,13 +28,13 @@
 <div align="center">
 <h1> Hospital System </h1>
 <br/><br/>
-<c:if test="${sessionScope.invalidAuthorization}">
+<c:if test="${requestScope.invalidAuthorization}">
     <p style="color:red"><c:out value="${invalidAuthorization}"/></p>
 </c:if>
-<c:if test="${sessionScope.blocked}">
+<c:if test="${requestScope.blocked}">
     <p style="color:red"><c:out value="${youAreBlocked}"/></p>
 </c:if>
-<c:if test="${!sessionScope.invalidAuthorization}">
+<c:if test="${!invalidAuthorization}">
     <h2> <c:out value="${inputFields}"/></h2>
 </c:if>
     <center><form action="MyController" method="post">

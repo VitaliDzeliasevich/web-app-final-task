@@ -25,7 +25,7 @@ public class ShowPatientAnalysisCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        int patientId = Integer.parseInt(request.getParameter(JSPParameter.PATIENT_ID));
+        int patientId = (int) request.getSession().getAttribute(JSPParameter.PATIENT_ID);
 
         AnalysisService service = ServiceFactory.getInstance().getAnalysisService();
         List<Analysis> analysisList = null;
@@ -37,6 +37,10 @@ public class ShowPatientAnalysisCommand implements Command {
             request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
             response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
+        String URL = CommandName.CONTROLLER_COMMAND + CommandName.SHOW_PATIENT_ANALYZES + "&" + JSPParameter.PATIENT_ID
+                + "=" + patientId + "&" + JSPParameter.FOUND + "=" +
+                true + "&" + JSPParameter.FOUND_ANALYSIS + "=" + analysisList;
+        request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
         request.setAttribute(JSPParameter.FOUND, true);
         request.setAttribute(JSPParameter.FOUND_ANALYSIS, analysisList);
         request.getRequestDispatcher(JSPPath.PATIENT_PAGE_PATH).forward(request,response);

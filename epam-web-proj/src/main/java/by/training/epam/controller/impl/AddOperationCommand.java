@@ -39,10 +39,11 @@ public class AddOperationCommand implements Command {
         }
 
         if (created) {
-            request.setAttribute(JSPParameter.CREATED, "true");
+            request.setAttribute(JSPParameter.CREATED, true);
         } else {
-            request.setAttribute(JSPParameter.CREATED, "false");
+            request.setAttribute(JSPParameter.CREATED, JSPParameter.FALSE);
         }
+        request.setAttribute(JSPParameter.PATIENT_ID, patientId);
         request.getRequestDispatcher(JSPPath.ADD_OPERATION_PAGE_PATH).forward(request,response);
 
     }

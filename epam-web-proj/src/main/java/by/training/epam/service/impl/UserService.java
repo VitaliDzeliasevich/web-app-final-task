@@ -8,14 +8,14 @@ import by.training.epam.entity.User;
 import by.training.epam.service.Service;
 import by.training.epam.service.exception.ServiceException;
 import by.training.epam.service.validator.Validator;
-import by.training.epam.service.validator.impl.RegistrationValidator;
-import org.apache.log4j.Logger;
+import by.training.epam.service.validator.exception.ValidationException;
+import by.training.epam.service.validator.impl.LoginPasswordValidator;
+import by.training.epam.service.validator.impl.PhoneNumberValidator;
 
 import java.util.List;
 
 public class UserService implements Service<User> {
 
-    private static final Logger log = Logger.getLogger(UserService.class);
     private static final UserService instance = new UserService();
 
     private UserService() {}
@@ -83,9 +83,6 @@ public class UserService implements Service<User> {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
-        if (created) {
-
-        }
         return created;
     }
 
@@ -111,14 +108,26 @@ public class UserService implements Service<User> {
         return role;
     }
 
-    public boolean validatePhone(String phone) {
-        Validator validator = RegistrationValidator.getInstance();
-        return validator.validatePhoneNumber(phone);
+    public boolean validatePhone(String phone) throws ServiceException{
+        Validator validator = PhoneNumberValidator.getInstance();
+        boolean valid;
+        try {
+            valid = validator.validate(phone);
+        } catch (ValidationException e) {
+            throw new ServiceException(e);
+        }
+        return valid;
     }
 
-    public boolean validatePasswordAndLogin(String password, String login) {
-        Validator validator = RegistrationValidator.getInstance();
-        return validator.validatePasswordAndLogin(password, login);
+    public boolean validateLoginAndPassword(String login, String password) throws ServiceException{
+        Validator validator = LoginPasswordValidator.getInstance();
+        boolean valid;
+        try {
+            valid = validator.validate(login, password);
+        } catch (ValidationException e) {
+            throw new ServiceException(e);
+        }
+        return valid;
     }
 
     public User getByLogin(String login) throws ServiceException {
@@ -143,15 +152,24 @@ public class UserService implements Service<User> {
         return isNotBlocked;
     }
 
-    public boolean blockUser(int id) throws ServiceException {
-        boolean blocked;
+    public void blockUser(int id) throws ServiceException {
+
         try {
             UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-            blocked = userDAO.blockUser(id);
+            userDAO.blockUser(id);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
-        return blocked;
+    }
+
+    public void unblockUser(int id) throws ServiceException {
+
+        try {
+            UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+            userDAO.unblockUser(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
     }
 
 

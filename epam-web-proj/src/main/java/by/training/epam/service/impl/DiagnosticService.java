@@ -6,13 +6,15 @@ import by.training.epam.dao.interfaces.DiagnosticDAO;
 import by.training.epam.entity.Diagnostic;
 import by.training.epam.service.Service;
 import by.training.epam.service.exception.ServiceException;
+import by.training.epam.service.validator.Validator;
+import by.training.epam.service.validator.exception.ValidationException;
+import by.training.epam.service.validator.impl.DateValidator;
 import org.apache.log4j.Logger;
 
 import java.util.List;
 
 public class DiagnosticService implements Service<Diagnostic> {
 
-    private static final Logger log = Logger.getLogger(DiagnosticService.class);
     private static final DiagnosticService instance = new DiagnosticService();
 
     private DiagnosticService() {}
@@ -23,11 +25,22 @@ public class DiagnosticService implements Service<Diagnostic> {
 
     @Override
     public List<Diagnostic> getAll() throws ServiceException {
+
+        try {
+            DiagnosticDAO diagnosticDAO = DAOFactory.getInstance().getDiagnosticDAO();
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
         return null;
     }
 
     @Override
     public Diagnostic getEntityById(int id) throws ServiceException {
+        try {
+            DiagnosticDAO diagnosticDAO = DAOFactory.getInstance().getDiagnosticDAO();
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
         return null;
     }
 
@@ -60,4 +73,28 @@ public class DiagnosticService implements Service<Diagnostic> {
         }
         return created;
     }
+
+    public List<Diagnostic> getByPatientId(int id) throws ServiceException {
+            List<Diagnostic> list;
+        try {
+            DiagnosticDAO diagnosticDAO = DAOFactory.getInstance().getDiagnosticDAO();
+            list = diagnosticDAO.getByHistoryId(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+        return list;
+    }
+
+    public boolean validateDate(String date) throws ServiceException {
+
+        Validator validator = DateValidator.getInstance();
+        boolean valid;
+        try {
+            valid = validator.validate(date);
+        } catch (ValidationException e) {
+            throw new ServiceException(e);
+        }
+        return valid;
+    }
+
 }

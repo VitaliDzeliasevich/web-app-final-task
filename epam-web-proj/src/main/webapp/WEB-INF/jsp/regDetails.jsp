@@ -11,10 +11,12 @@
                         <p style="color:red"><c:out value="Incorrect phone number. Please follow pattern: (xx)-xxx-xx-xx"/></p>
                         </c:if>
                         <c:remove var="incorrectPhone" />
-            <h1><c:out value="${login}" />, please fill in personal Info</h1>
+            <h1><c:out value="${requestScope.login}" />, please fill in personal Info</h1>
             <form action="MyController" method="post">
             <table>
             <input type="hidden" name="command" value="detailsRegistration" />
+            <input type="hidden" name="login" value="${requestScope.login}" />
+            <input type="hidden" name="password" value="${requestScope.password}" />
             <tbody>
             <tr>
             <td>Name:</td>
@@ -34,6 +36,13 @@
                 <option value = "2" > doctor</option >
                 <option value = "3" > nurse</option >
                 </select></td>
+            </tr>
+            <tr>
+            <td>Department:</td>
+            <td><select name= "department" >
+                 <option value = "1" > Reanimation-1</option >
+                 <option value = "2" > Reanimation-2</option >
+                 </select></td>
             </tr>
             <tr>
             <td>Phone:</td>

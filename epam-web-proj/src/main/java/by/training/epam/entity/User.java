@@ -18,13 +18,14 @@ public class User implements Serializable {
 
     public User() {}
 
-    public User(String login, String password, String name, String surname, int roleId, String phone) {
+    public User(String login, String password, String name, String surname, int roleId, String phone, int departmentsId) {
         this.login = login;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.roleId = roleId;
         this.phone = phone;
+        this.departmentsId = departmentsId;
     }
 
     public String getPhone() { return phone; }

@@ -2,6 +2,16 @@ package by.training.epam.controller.util;
 
 public final class CommandName {
 
+    public static String SHOW_DEPARTMENT_ANALYSIS = "SHOW_DEPARTMENT_ANALYSIS";
+    public static String GO_TO_PROLONG_TREATMENT= "GO_TO_PROLONG_TREATMENT";
+    public static String PROLONG_TREATMENT= "PROLONG_TREATMENT";
+    public static String INTERRUPT_TREATMENT = "INTERRUPT_TREATMENT";
+    public static String SHOW_DRUG_THERAPY = "SHOW_DRUG_THERAPY";
+    public static String ADD_TREATMENT = "ADD_TREATMENT";
+    public static String CHOOSE_DRUG_GROUP = "CHOOSE_DRUG_GROUP";
+    public static String GO_TO_ADD_TREATMENT = "GO_TO_ADD_TREATMENT";
+    public static String SHOW_PATIENT_DIAGNOSTICS = "SHOW_PATIENT_DIAGNOSTICS";
+    public static String UNBLOCK_USER = "UNBLOCK_USER";
     public static String BLOCK_USER = "BLOCK_USER";
     public static String SHOW_ALL_USERS = "SHOW_ALL_USERS";
     public static String GO_TO_PERSONAL_INFO = "GO_TO_PERSONAL_INFO";

@@ -8,6 +8,7 @@ import by.training.epam.entity.Analysis;
 import by.training.epam.service.Service;
 import by.training.epam.service.ServiceFactory;
 import by.training.epam.service.exception.ServiceException;
+import by.training.epam.service.impl.AnalysisService;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -15,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class UpdateAnalysisCommand implements Command {
 
@@ -26,10 +28,12 @@ public class UpdateAnalysisCommand implements Command {
         String executionDate = request.getParameter(JSPParameter.EXECUTION_DATE);
         String result = request.getParameter(JSPParameter.RESULT);
 
-        Service<Analysis> service = ServiceFactory.getInstance().getAnalysisService();
+        AnalysisService service = ServiceFactory.getInstance().getAnalysisService();
         boolean updated = false;
+        List<Analysis> analysisList = null;
         try {
            updated = service.update(new Analysis(analysisId,result,executionDate));
+            analysisList = service.getByPatientId((Integer) request.getSession().getAttribute(JSPParameter.PATIENT_ID));
         } catch (ServiceException e) {
             log.log(Level.ERROR,"Updating Analysis error", e);
             String errorMessage = "Smth went wrong, please try later.";
@@ -42,7 +46,9 @@ public class UpdateAnalysisCommand implements Command {
             request.setAttribute(JSPParameter.UPDATED, false);
             request.getRequestDispatcher(JSPPath.UPDATE_ANALYSIS_PATH).forward(request,response);
         } else {
-            response.sendRedirect(CommandName.CONTROLLER_COMMAND+CommandName.GO_TO_PATIENT_PAGE);
+            request.setAttribute(JSPParameter.FOUND,true);
+            request.setAttribute(JSPParameter.FOUND_ANALYSIS, analysisList);
+            request.getRequestDispatcher(JSPPath.PATIENT_PAGE_PATH).forward(request,response);
         }
 
     }

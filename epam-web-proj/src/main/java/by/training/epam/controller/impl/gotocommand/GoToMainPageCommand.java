@@ -13,6 +13,8 @@ import java.io.IOException;
 public class GoToMainPageCommand implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.getSession().removeAttribute(JSPParameter.PATIENT_ID);
+
         String URL = CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_MAIN_PAGE;
         request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
         request.getRequestDispatcher(JSPPath.MAIN_PAGE_PATH).forward(request,response);

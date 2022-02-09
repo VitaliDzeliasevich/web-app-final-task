@@ -41,6 +41,10 @@ public class DAOFactory  {
         return AnalysisDAOImpl.getInstance();
     }
 
+    public DrugTreatmentDAO getDrugTreatmentDAO() throws DAOException {
+        return DrugTreatmentDAOImpl.getInstance();
+    }
+
     public AbstractDAO<Room> getRoomDAO() throws DAOException {
         return  RoomDAOImpl.getInstance();
     }

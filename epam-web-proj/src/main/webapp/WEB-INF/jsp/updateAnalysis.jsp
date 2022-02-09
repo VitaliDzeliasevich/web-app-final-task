@@ -3,8 +3,18 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
 <html>
 <head>
+        <fmt:setLocale value="${sessionScope.localization}" />
+        <fmt:setBundle basename="locale" var="loc" scope="session" />
+
+            <fmt:message bundle="${loc}" key="updatingAnalysis" var="updatingAnalysis" />
+
+
 <jsp:include page="default/header.jsp" />
+<jsp:include page="default/localization.jsp" />
 </head>
+
+<h2 align="center"><c:out value="${updatingAnalysis}"</h2>
+
 <form action="MyController" method="post">
             <table>
             <input type="hidden" name="command" value="UPDATE_ANALYSIS_COMMAND" />

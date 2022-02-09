@@ -1,32 +1,50 @@
 package by.training.epam.dao.impl;
 
+import by.training.epam.dao.impl.requestoperator.AnalysisRequestOperator;
 import by.training.epam.dao.interfaces.AnalysisDAO;
 import by.training.epam.dao.exeption.DAOException;
 import by.training.epam.dao.impl.requestoperator.RequestOperator;
 import by.training.epam.dao.impl.requestoperator.UniversalRequestOperator;
-import by.training.epam.dao.impl.requestoperator.impl.AnalysisRequestOperator;
+import by.training.epam.dao.impl.requestoperator.impl.AnalysisRequestOperatorImpl;
 import by.training.epam.dao.impl.requestoperator.impl.UniversalRequestOpImpl;
 import by.training.epam.dao.impl.tableinfo.SQLColumnLabel;
 import by.training.epam.dao.impl.tableinfo.SQLTableTitle;
 import by.training.epam.entity.Analysis;
-
-import org.apache.log4j.Logger;
+import by.training.epam.entity.transfer.PatientAnalysis;
 
 import java.util.List;
 
 public class AnalysisDAOImpl implements AnalysisDAO {
 
-    private final static Logger log = Logger.getLogger(AnalysisDAOImpl.class);
-
     private static final String GET_ALL_REQUEST = "SELECT * FROM %s".formatted(SQLTableTitle.ANALYZES_TABLE);
     private static final String GET_BY_PATIENT_ID_REQUEST =
-            "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s = ?".formatted(
-                    SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.ID, SQLTableTitle.ANALYSIS_TYPES_TABLE,
-                    SQLColumnLabel.TYPE, SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.APPOINTMENT_DATE,
-                    SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.EXECUTION_DATE, SQLTableTitle.ANALYZES_TABLE,
-                    SQLColumnLabel.RESULT,SQLTableTitle.ANALYZES_TABLE, SQLTableTitle.ANALYSIS_TYPES_TABLE,
-                    SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.ANALYSIS_TYPE_ID, SQLTableTitle.ANALYSIS_TYPES_TABLE,
-                    SQLColumnLabel.ID, SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.PATIENT_ID);
+            ("SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s = ? " +
+                    "ORDER BY %s ASC").formatted(SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.ID,
+                    SQLTableTitle.ANALYSIS_TYPES_TABLE, SQLColumnLabel.TYPE, SQLTableTitle.ANALYZES_TABLE,
+                    SQLColumnLabel.APPOINTMENT_DATE, SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.EXECUTION_DATE,
+                    SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.RESULT,SQLTableTitle.ANALYZES_TABLE,
+                    SQLTableTitle.ANALYSIS_TYPES_TABLE, SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.ANALYSIS_TYPE_ID,
+                    SQLTableTitle.ANALYSIS_TYPES_TABLE, SQLColumnLabel.ID, SQLTableTitle.ANALYZES_TABLE,
+                    SQLColumnLabel.PATIENT_ID, SQLColumnLabel.APPOINTMENT_DATE);
+    private static final String GET_BY_DEPARTMENT_ID_AND_DATE_REQUEST =
+            ("SELECT  %s.%s, %s, %s.%s, %s, %s, %s FROM %s INNER JOIN %s ON %s.%s = %s.%s " +
+                    "INNER JOIN %s ON %s.%s = %s.%s INNER JOIN %s ON %s = %s.%s  WHERE %s.%s = ? AND %s = ? " +
+                    "ORDER BY %s ASC").formatted(SQLTableTitle.ANALYSIS_TYPES_TABLE, SQLColumnLabel.TYPE,
+                    SQLColumnLabel.APPOINTMENT_DATE,
+                    SQLTableTitle.PATIENT_TABLE, SQLColumnLabel.ID,
+                    SQLColumnLabel.PATIENT_NAME,
+                    SQLColumnLabel.PATIENT_SURNAME, SQLColumnLabel.ROOM_NUMBER,
+                    SQLTableTitle.ANALYZES_TABLE,
+                    SQLTableTitle.ANALYSIS_TYPES_TABLE,
+                    SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.ANALYSIS_TYPE_ID,
+                    SQLTableTitle.ANALYSIS_TYPES_TABLE, SQLColumnLabel.ID,
+                    SQLTableTitle.PATIENT_TABLE,
+                    SQLTableTitle.ANALYZES_TABLE, SQLColumnLabel.PATIENT_ID,
+                    SQLTableTitle.PATIENT_TABLE, SQLColumnLabel.ID,
+                    SQLTableTitle.ROOM_TABLE,
+                    SQLColumnLabel.PATIENT_ROOM_ID, SQLTableTitle.ROOM_TABLE, SQLColumnLabel.ID,
+                    SQLTableTitle.ROOM_TABLE, SQLColumnLabel.ROOM_DEPARTMENT_ID, SQLColumnLabel.APPOINTMENT_DATE,
+                    SQLColumnLabel.ROOM_NUMBER);
     private static final String GET_BY_ID_REQUEST =
             "SELECT * FROM %s WHERE id = ?".formatted(SQLTableTitle.ANALYZES_TABLE);
     private static final String CREATE_REQUEST =
@@ -46,19 +64,19 @@ public class AnalysisDAOImpl implements AnalysisDAO {
 
     @Override
     public List<Analysis> getAll() throws DAOException {
-        RequestOperator<Analysis> requestOp = AnalysisRequestOperator.getInstance();
+        RequestOperator<Analysis> requestOp = AnalysisRequestOperatorImpl.getInstance();
         return requestOp.findAll(GET_ALL_REQUEST);
     }
 
     @Override
     public List<Analysis> getByHistoryId(int id) throws DAOException{
-        RequestOperator<Analysis> requestOp = AnalysisRequestOperator.getInstance();
+        RequestOperator<Analysis> requestOp = AnalysisRequestOperatorImpl.getInstance();
         return requestOp.findByParameters(GET_BY_PATIENT_ID_REQUEST,id);
     }
 
     @Override
     public Analysis getEntityById(int id) throws DAOException {
-        RequestOperator<Analysis> requestOp = AnalysisRequestOperator.getInstance();
+        RequestOperator<Analysis> requestOp = AnalysisRequestOperatorImpl.getInstance();
         return requestOp.findByParameters(GET_BY_ID_REQUEST,id).get(0);
     }
 
@@ -79,5 +97,11 @@ public class AnalysisDAOImpl implements AnalysisDAO {
         UniversalRequestOperator universalRequestOp = UniversalRequestOpImpl.getInstance();
         return universalRequestOp.create(CREATE_REQUEST,entity.getPatientId(),
                 entity.getAnalysisTypeId(), entity.getAppointmentDate());
+    }
+
+    @Override
+    public List<PatientAnalysis> getByDepartmentIdAndDate(int departmentId, String date) throws DAOException {
+        AnalysisRequestOperator requestOp = AnalysisRequestOperatorImpl.getInstance();
+        return requestOp.findByDepartmentAndDate(GET_BY_DEPARTMENT_ID_AND_DATE_REQUEST, departmentId, date);
     }
 }

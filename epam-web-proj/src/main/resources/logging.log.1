@@ -1,11 +1,11 @@
-2022-01-30 15:38:07 ERROR UserRowMapper:35 - java.sql.SQLException: Column 'departments_id' not found.
-2022-01-30 15:38:07 ERROR LogInCommand:47 - Logination error
-by.training.epam.service.exception.ServiceException: by.training.epam.dao.exeption.DAOException: java.sql.SQLException: Column 'departments_id' not found.
-	at by.training.epam.service.impl.UserService.authorized(UserService.java:58)
-	at by.training.epam.controller.impl.LogInCommand.execute(LogInCommand.java:30)
+2022-02-09 01:40:27 ERROR AnalysisRequestOperatorImpl:151 - java.sql.SQLSyntaxErrorException: Unknown column 'patients.patients_id' in 'field list'
+2022-02-09 01:40:27 ERROR ShowDepartmentAnalysisCommand:38 - Getting analysis error
+by.training.epam.service.exception.ServiceException: by.training.epam.dao.exeption.DAOException: java.sql.SQLSyntaxErrorException: Unknown column 'patients.patients_id' in 'field list'
+	at by.training.epam.service.impl.AnalysisService.getByDepartmentAndDate(AnalysisService.java:91)
+	at by.training.epam.controller.impl.ShowDepartmentAnalysisCommand.execute(ShowDepartmentAnalysisCommand.java:34)
 	at by.training.epam.controller.Controller.execute(Controller.java:31)
-	at by.training.epam.controller.Controller.doPost(Controller.java:26)
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:647)
+	at by.training.epam.controller.Controller.doGet(Controller.java:21)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:621)
 	at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:305)
 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
@@ -29,18 +29,16 @@ by.training.epam.service.exception.ServiceException: by.training.epam.dao.exepti
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
 	at java.base/java.lang.Thread.run(Thread.java:831)
-Caused by: by.training.epam.dao.exeption.DAOException: java.sql.SQLException: Column 'departments_id' not found.
-	at by.training.epam.dao.impl.rowmapper.impl.UserRowMapper.map(UserRowMapper.java:36)
-	at by.training.epam.dao.impl.requestoperator.impl.UserRequestOperatorImpl.findByParameters(UserRequestOperatorImpl.java:90)
-	at by.training.epam.dao.impl.UserDAOImpl.authorized(UserDAOImpl.java:95)
-	at by.training.epam.service.impl.UserService.authorized(UserService.java:56)
+Caused by: by.training.epam.dao.exeption.DAOException: java.sql.SQLSyntaxErrorException: Unknown column 'patients.patients_id' in 'field list'
+	at by.training.epam.dao.impl.requestoperator.impl.AnalysisRequestOperatorImpl.findByDepartmentAndDate(AnalysisRequestOperatorImpl.java:152)
+	at by.training.epam.dao.impl.AnalysisDAOImpl.getByDepartmentIdAndDate(AnalysisDAOImpl.java:104)
+	at by.training.epam.service.impl.AnalysisService.getByDepartmentAndDate(AnalysisService.java:89)
 	... 27 more
-Caused by: java.sql.SQLException: Column 'departments_id' not found.
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:89)
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:63)
-	at com.mysql.cj.jdbc.result.ResultSetImpl.findColumn(ResultSetImpl.java:581)
-	at com.mysql.cj.jdbc.result.ResultSetImpl.getInt(ResultSetImpl.java:843)
-	at by.training.epam.dao.impl.rowmapper.impl.UserRowMapper.map(UserRowMapper.java:31)
-	... 30 more
+Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'patients.patients_id' in 'field list'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:1009)
+	at com.mysql.cj.jdbc.CallableStatement.executeQuery(CallableStatement.java:891)
+	at by.training.epam.dao.impl.requestoperator.impl.AnalysisRequestOperatorImpl.findByDepartmentAndDate(AnalysisRequestOperatorImpl.java:128)
+	... 29 more

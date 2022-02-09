@@ -27,4 +27,6 @@ public final class ServiceFactory {
 
     public ConsultationService getConsultationService() {return ConsultationService.getInstance();}
 
+    public DrugTreatmentService getDrugTreatmentService() {return DrugTreatmentService.getInstance();}
+
 }

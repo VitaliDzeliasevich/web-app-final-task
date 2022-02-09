@@ -34,8 +34,9 @@ public class SQLColumnLabel {
     public static final String DISEASE_HISTORY_EPICRYSIS = "epicrysis";
 
     public static final String DIAGNOSTIC_PATIENT_ID = "disease_history_id";
-    public static final String DIAGNOSTIC_DIAGNOSTIC_TYPE_ID = "diagnostic_types_id";
+    public static final String DIAGNOSTIC_DIAGNOSTIC_TYPE_ID = "type_id";
     public static final String DIAGNOSTIC_DR_ID = "diagnostic_dr_id";
+    public static final String DIAGNOSTIC_NAME = "diagnostic_name";
 
     public static final String APPOINTMENT_DATE = "appointment_date";
     public static final String EXECUTION_DATE = "execution_date";
@@ -72,6 +73,25 @@ public class SQLColumnLabel {
 
     public static final String TYPE = "type";
 
+    public static final String DRUG_TREATMENT_PATIENT_ID = "patients_id";
+    public static final String DRUG_TREATMENT_DRUGS_ID = "drugs_id";
+    public static final String DRUG_TREATMENT_DR_ID = "dr_id";
+    public static final String DRUG_TREATMENT_START_DATE = "start_date";
+    public static final String DRUG_TREATMENT_END_DATE = "end_date";
+    public static final String DRUG_TREATMENT_DOSE = "dose";
+    public static final String DRUG_WAY_OF_USING_ID = "way_of_using_id";
+    public static final String WAY_OF_USING = "way";
+    public static final String DRUG_TREATMENT_IS_INTERRUPTED = "is_interrupted";
+
+
+    public static final String DRUG_GROUP_ID = "drug_group_id";
+    public static final String DRUG_NAME = "name";
+
+
+
+
+
+    public static final String DRUG_GROUP = "group";
 
 
 

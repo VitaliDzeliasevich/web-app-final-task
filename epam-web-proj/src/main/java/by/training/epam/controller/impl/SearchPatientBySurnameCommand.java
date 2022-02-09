@@ -24,7 +24,7 @@ public class SearchPatientBySurnameCommand implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
 
-        String patientSurname = request.getParameter(JSPParameter.SEARCH_PATIENT);
+        String patientSurname = request.getParameter(JSPParameter.SURNAME);
         List<Patient> patients = null;
 
         try {
@@ -35,17 +35,19 @@ public class SearchPatientBySurnameCommand implements Command {
             request.getSession().setAttribute(JSPParameter.ERROR_MESSAGE, errorMessage);
             response.sendRedirect(CommandName.CONTROLLER_COMMAND + CommandName.GO_TO_ERROR_PAGE);
         }
-            String URL;
+        String URL;
         if (patients!=null && patients.size()>0) {
             URL = CommandName.CONTROLLER_COMMAND + CommandName.SEARCH_PATIENT_BY_SURNAME + "&" +
-                    JSPParameter.FOUND + "=" + true + "&" + JSPParameter.SEARCHED_PATIENT + "=" + patients;
+                    JSPParameter.FOUND + "=" + true + "&" + JSPParameter.SEARCHED_PATIENT + "=" + patients + "&" +
+            JSPParameter.SURNAME + "=" + patientSurname;
             request.setAttribute(JSPParameter.FOUND, true);
-            request.setAttribute(JSPParameter.SEARCHED_PATIENT,patients);
+            request.setAttribute(JSPParameter.SEARCHED_PATIENT, patients);
         } else {
             request.setAttribute(JSPParameter.FOUND, JSPParameter.FALSE);
             URL = CommandName.CONTROLLER_COMMAND + CommandName.SEARCH_PATIENT_BY_SURNAME
                     + "&" + JSPParameter.FOUND + "=" + JSPParameter.FALSE;
         }
+
         request.getSession().setAttribute(JSPParameter.LAST_REQUEST, URL);
         request.getRequestDispatcher(JSPPath.MAIN_PAGE_PATH).forward(request,response);
     }

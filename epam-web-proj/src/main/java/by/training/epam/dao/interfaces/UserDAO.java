@@ -16,6 +16,9 @@ public interface UserDAO extends AbstractDAO<User> {
 
     boolean blockUser(int id) throws DAOException;
 
+    boolean unblockUser(int id) throws DAOException;
+
     boolean checkIfBlocked(String login) throws DAOException;
+
 
 }

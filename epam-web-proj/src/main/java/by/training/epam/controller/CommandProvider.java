@@ -1,4 +1,5 @@
 package by.training.epam.controller;
+
 import by.training.epam.controller.impl.*;
 import by.training.epam.controller.impl.gotocommand.*;
 import by.training.epam.controller.util.CommandName;
@@ -16,6 +17,16 @@ public class CommandProvider {
 
     private CommandProvider() {
 
+        commands.put(CommandName.SHOW_DEPARTMENT_ANALYSIS, new ShowDepartmentAnalysisCommand());
+        commands.put(CommandName.GO_TO_PROLONG_TREATMENT, new GoToProlongTreatmentCommand());
+        commands.put(CommandName.PROLONG_TREATMENT, new ProlongTreatmentCommand());
+        commands.put(CommandName.INTERRUPT_TREATMENT, new InterruptTreatmentCommand());
+        commands.put(CommandName.SHOW_DRUG_THERAPY, new ShowDrugTherapyCommand());
+        commands.put(CommandName.ADD_TREATMENT, new AddTreatmentCommand());
+        commands.put(CommandName.CHOOSE_DRUG_GROUP, new ChooseDrugGroupCommand());
+        commands.put(CommandName.GO_TO_ADD_TREATMENT, new GoToAddTreatmentCommand());
+        commands.put(CommandName.SHOW_PATIENT_DIAGNOSTICS, new ShowPatientDiagnosticsCommand());
+        commands.put(CommandName.UNBLOCK_USER, new UnblockUserCommand());
         commands.put(CommandName.BLOCK_USER, new BlockUserCommand());
         commands.put(CommandName.SHOW_ALL_USERS, new ShowAllUsersCommand());
         commands.put(CommandName.GO_TO_PERSONAL_INFO, new GoToPersonalInfoCommand());

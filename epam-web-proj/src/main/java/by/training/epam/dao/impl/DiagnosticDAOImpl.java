@@ -20,7 +20,12 @@ public class DiagnosticDAOImpl implements DiagnosticDAO {
 
     private static final String GET_ALL_REQUEST = "SELECT * FROM %s".formatted(SQLTableTitle.DIAGNOSTIC_TABLE);
     private static final String GET_BY_PATIENT_ID_REQUEST =
-            "SELECT * FROM %s WHERE %s = ?".formatted(SQLTableTitle.DIAGNOSTIC_TABLE, SQLColumnLabel.DIAGNOSTIC_PATIENT_ID);
+            "SELECT %s.%s,%s, %s, %s, %s, %s FROM %s INNER JOIN %s ON %s = %s.%s WHERE %s = ? ORDER BY %s ASC".formatted(
+                    SQLTableTitle.DIAGNOSTIC_TABLE, SQLColumnLabel.ID, SQLColumnLabel.DIAGNOSTIC_PATIENT_ID,
+                    SQLColumnLabel.DIAGNOSTIC_NAME, SQLColumnLabel.APPOINTMENT_DATE,SQLColumnLabel.EXECUTION_DATE,
+                    SQLColumnLabel.RESULT,SQLTableTitle.DIAGNOSTIC_TABLE,SQLTableTitle.DIAGNOSTIC_TYPES_TABLE,
+                    SQLColumnLabel.DIAGNOSTIC_DIAGNOSTIC_TYPE_ID,SQLTableTitle.DIAGNOSTIC_TYPES_TABLE,SQLColumnLabel.ID,
+                    SQLColumnLabel.DIAGNOSTIC_PATIENT_ID, SQLColumnLabel.APPOINTMENT_DATE);
     private static final String GET_BY_ID_REQUEST =
             "SELECT * FROM %s WHERE id = ?".formatted(SQLTableTitle.DIAGNOSTIC_TABLE);
     private static final String CREATE_REQUEST =
